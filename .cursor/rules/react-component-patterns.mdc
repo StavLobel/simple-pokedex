@@ -1,0 +1,26 @@
+---
+description: React component conventions for PokéSearch
+globs: components/**/*.tsx
+alwaysApply: false
+---
+
+# React Component Patterns
+
+- Functional components only — no class components
+- Define and export props interfaces (e.g., `PokemonCardProps`, `SearchBarProps`)
+- State management via React Context (`contexts/PokemonContext.tsx`) — no external state library
+- Wrap async operations in try/catch and surface errors to users
+- Modals must support Escape key dismiss and click-outside-to-close
+- Use `useCallback` for functions passed as props or used in dependency arrays
+- Use a `cancelled` flag pattern in `useEffect` to prevent state updates after unmount
+
+```tsx
+// Preferred error handling in async effects
+try {
+  const data = await fetchPokemonData(name);
+  if (cancelled) return;
+  setData(data);
+} catch (err) {
+  if (!cancelled) setError(err instanceof Error ? err.message : "Unknown error");
+}
+```

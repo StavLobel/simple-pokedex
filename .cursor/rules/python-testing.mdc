@@ -1,0 +1,16 @@
+---
+description: Python test suite conventions
+globs: tests/**/*.py
+alwaysApply: false
+---
+
+# Python Testing
+
+- Framework: pytest with strict markers (`--strict-markers`)
+- Markers: `@pytest.mark.unit`, `@pytest.mark.integration`, `@pytest.mark.e2e`
+- E2E tests use Playwright and require the dev server running on `localhost:3000`
+- Integration tests hit the live PokéAPI — no mocks
+- Unit tests validate Python mirror modules in `app/engine.py` and `app/utils.py`
+- Shared fixtures live in `tests/conftest.py`
+- Coverage target: 80% minimum (`fail_under = 80` in `pyproject.toml`)
+- Run tests: `pytest tests/unit/ -v`, `pytest tests/integration/ -v`, `pytest tests/e2e/ -v`

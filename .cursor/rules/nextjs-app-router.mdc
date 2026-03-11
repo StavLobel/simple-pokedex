@@ -1,0 +1,13 @@
+---
+description: Next.js App Router conventions
+globs: app/**/*.{ts,tsx}
+alwaysApply: false
+---
+
+# Next.js App Router
+
+- Pages are server components by default — add `"use client"` only when interactivity, hooks, or browser APIs are needed
+- The current `page.tsx` is a client component; keep API fetching logic in `lib/`, not in page files
+- Use `next/image` for images — remote patterns for `raw.githubusercontent.com` are configured in `next.config.ts`
+- App metadata is exported from `layout.tsx` via the `metadata` object
+- Do not create `pages/` directory files — this project uses App Router exclusively

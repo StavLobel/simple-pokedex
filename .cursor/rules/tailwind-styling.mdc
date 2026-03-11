@@ -1,0 +1,14 @@
+---
+description: Tailwind CSS styling conventions
+globs: "**/*.{tsx,css}"
+alwaysApply: false
+---
+
+# Tailwind CSS Styling
+
+- Tailwind v4 via `@tailwindcss/postcss` — there is no `tailwind.config.js`
+- Theme is defined in `app/globals.css` using `@theme inline` with CSS custom properties
+- Custom variables: `--color-type-*` for Pokémon types, `--color-surface-dark`, `--color-muted`, `--color-foreground`
+- Use Tailwind utility classes directly in JSX — no CSS modules, styled-components, or Emotion
+- Mobile-first responsive design: use `md:` and `lg:` prefixes for desktop layouts
+- For custom non-Tailwind styles, add them to `globals.css` (e.g., `.image-rendering-pixelated`)

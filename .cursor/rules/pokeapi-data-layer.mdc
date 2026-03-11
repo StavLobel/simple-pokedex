@@ -1,0 +1,15 @@
+---
+description: PokéAPI data layer conventions
+globs: lib/**/*.ts
+alwaysApply: false
+---
+
+# PokéAPI Data Layer
+
+- All PokéAPI fetch functions live in `lib/pokeapi.ts`
+- API base URL: always use `POKEAPI_BASE_URL` from `lib/constants.ts` — never hardcode the URL
+- TypeScript interfaces for API responses are colocated in `lib/pokeapi.ts`
+- Type effectiveness engine (`lib/typeEffectiveness.ts`) — pure functions, no side effects, no fetch calls
+- FRLG overrides: `lib/frlg-type-overrides.ts` maps Pokémon IDs to corrected Gen III types; `lib/frlg-pokemon.ts` lists valid FRLG IDs
+- Always `throw` on non-ok fetch responses; callers are responsible for catching errors
+- Helper functions (`formatDexNumber`, `getEnglishFlavorText`, `getFrlgSprite`) are in `lib/pokeapi.ts`

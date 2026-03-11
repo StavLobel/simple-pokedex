@@ -1,0 +1,34 @@
+---
+description: High-level project context for PokéSearch
+alwaysApply: true
+---
+
+# PokéSearch — Project Overview
+
+PokéSearch is a web-based Pokédex focused on FireRed/LeafGreen (FRLG) Pokémon. It fetches data from the PokéAPI REST API.
+
+## Tech Stack
+
+- **Framework:** Next.js 16 (App Router)
+- **UI:** React 19 (functional components, hooks)
+- **Styling:** Tailwind CSS 4
+- **Language:** TypeScript (strict mode)
+- **Testing:** Vitest (TS unit tests), pytest (Python integration + E2E)
+- **Deployment:** Vercel via GitHub Actions
+
+## Folder Layout
+
+- `app/` — Next.js App Router pages and layout
+- `components/` — React UI components
+- `contexts/` — React Context providers (state management)
+- `lib/` — Data fetching, types, business logic, constants
+- `tests/` — Python pytest suite (unit, integration, e2e)
+- `public/` — Static assets (pokeball sprites)
+- `docs/` — SRS and STP documentation
+
+## Key Conventions
+
+- No `src/` directory — files live at project root
+- Path alias `@/*` maps to project root
+- `POKEAPI_BASE_URL` is the single source of truth for the API base URL (in `lib/constants.ts`)
+- FRLG-specific type overrides and Pokémon lists are in `lib/frlg-*.ts`
