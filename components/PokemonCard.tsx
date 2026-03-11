@@ -149,9 +149,7 @@ export default function PokemonCard({ pokemonName }: PokemonCardProps) {
                 priority
               />
             ) : (
-              <div className="flex items-center justify-center text-muted">
-                No image
-              </div>
+              <div className="flex items-center justify-center text-muted">No image</div>
             )}
           </div>
         </div>
@@ -159,19 +157,13 @@ export default function PokemonCard({ pokemonName }: PokemonCardProps) {
         {/* Right column — Stats */}
         <div className="space-y-6">
           <div>
-            <p className="font-mono text-sm text-muted">
-              {formatDexNumber(pokemon.id)}
-            </p>
-            <h2 className="text-3xl font-bold capitalize text-foreground">
-              {pokemon.name}
-            </h2>
+            <p className="font-mono text-sm text-muted">{formatDexNumber(pokemon.id)}</p>
+            <h2 className="text-3xl font-bold capitalize text-foreground">{pokemon.name}</h2>
           </div>
 
           {/* Types */}
           <div>
-            <h3 className="mb-2 text-sm font-semibold uppercase tracking-wider text-muted">
-              Type
-            </h3>
+            <h3 className="mb-2 text-sm font-semibold uppercase tracking-wider text-muted">Type</h3>
             <div className="flex gap-2">
               {pokemon.types.map((t) => (
                 <TypeBadge key={t.type.name} type={t.type.name as PokemonTypeName} />
@@ -193,9 +185,7 @@ export default function PokemonCard({ pokemonName }: PokemonCardProps) {
                 >
                   {a.name.replace("-", " ")}
                   {a.isHidden && (
-                    <span className="ml-1 text-[10px] uppercase text-muted">
-                      (Hidden)
-                    </span>
+                    <span className="ml-1 text-[10px] uppercase text-muted">(Hidden)</span>
                   )}
                 </button>
               ))}
@@ -203,11 +193,7 @@ export default function PokemonCard({ pokemonName }: PokemonCardProps) {
           </div>
 
           {/* Weaknesses / Resistances */}
-          <WeaknessGrid
-            weaknesses={weaknesses}
-            resistances={resistances}
-            immunities={immunities}
-          />
+          <WeaknessGrid weaknesses={weaknesses} resistances={resistances} immunities={immunities} />
         </div>
       </div>
 

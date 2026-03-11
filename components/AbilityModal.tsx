@@ -8,11 +8,7 @@ interface AbilityModalProps {
   onClose: () => void;
 }
 
-export default function AbilityModal({
-  abilityName,
-  description,
-  onClose,
-}: AbilityModalProps) {
+export default function AbilityModal({ abilityName, description, onClose }: AbilityModalProps) {
   const overlayRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {

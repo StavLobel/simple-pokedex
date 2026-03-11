@@ -29,7 +29,7 @@ export default function SearchBar({ onSelect }: SearchBarProps) {
         .slice(0, 20);
       setFiltered(results);
     },
-    [allPokemon]
+    [allPokemon],
   );
 
   function handleChange(e: React.ChangeEvent<HTMLInputElement>) {
@@ -83,22 +83,14 @@ export default function SearchBar({ onSelect }: SearchBarProps) {
         onKeyDown={handleKeyDown}
         onFocus={() => filtered.length > 0 && setIsOpen(true)}
         placeholder={
-          error
-            ? "Failed to load Pokémon list"
-            : loading
-              ? "Loading Pokémon…"
-              : "Search Pokémon…"
+          error ? "Failed to load Pokémon list" : loading ? "Loading Pokémon…" : "Search Pokémon…"
         }
         disabled={loading || !!error}
         className={`w-full rounded-xl border px-4 py-3 text-foreground placeholder:text-muted outline-none transition focus:border-white/40 focus:ring-2 focus:ring-white/10 disabled:opacity-50 ${
-          error
-            ? "border-red-500/40 bg-red-500/5"
-            : "border-white/20 bg-surface-dark"
+          error ? "border-red-500/40 bg-red-500/5" : "border-white/20 bg-surface-dark"
         }`}
       />
-      {error && (
-        <p className="mt-2 text-center text-sm text-red-400">{error}</p>
-      )}
+      {error && <p className="mt-2 text-center text-sm text-red-400">{error}</p>}
       {isOpen && filtered.length > 0 && (
         <ul className="absolute left-0 right-0 z-40 mt-1 max-h-64 overflow-y-auto rounded-xl border border-white/10 bg-surface-dark shadow-xl">
           {filtered.map((p, i) => (

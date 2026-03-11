@@ -1,12 +1,6 @@
 "use client";
 
-import {
-  createContext,
-  useContext,
-  useEffect,
-  useState,
-  type ReactNode,
-} from "react";
+import { createContext, useContext, useEffect, useState, type ReactNode } from "react";
 import { fetchAllPokemon } from "@/lib/pokeapi";
 import { FRLG_POKEMON_IDS, extractIdFromUrl } from "@/lib/frlg-pokemon";
 

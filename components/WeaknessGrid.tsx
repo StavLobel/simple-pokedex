@@ -9,11 +9,7 @@ interface WeaknessGridProps {
   immunities: TypeMultiplier[];
 }
 
-export default function WeaknessGrid({
-  weaknesses,
-  resistances,
-  immunities,
-}: WeaknessGridProps) {
+export default function WeaknessGrid({ weaknesses, resistances, immunities }: WeaknessGridProps) {
   return (
     <div className="space-y-4">
       <div>

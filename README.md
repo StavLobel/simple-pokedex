@@ -38,14 +38,14 @@ Open [http://localhost:3000](http://localhost:3000) in your browser.
 
 ## Scripts
 
-| Command              | Description                                |
-| -------------------- | ------------------------------------------ |
-| `npm run dev`        | Start development server                   |
-| `npm run build`      | Create production build                    |
-| `npm start`          | Start production server                    |
-| `npm run lint`       | Run ESLint                                 |
-| `npm run format`     | Format code with Prettier                  |
-| `npm run format:check` | Check formatting (used in CI)           |
+| Command                | Description                   |
+| ---------------------- | ----------------------------- |
+| `npm run dev`          | Start development server      |
+| `npm run build`        | Create production build       |
+| `npm start`            | Start production server       |
+| `npm run lint`         | Run ESLint                    |
+| `npm run format`       | Format code with Prettier     |
+| `npm run format:check` | Check formatting (used in CI) |
 
 ## Testing
 
@@ -106,16 +106,16 @@ Or connect the repo to Vercel for automatic deployments.
 
 ## Tech Stack
 
-| Layer     | Technology        |
-| --------- | ----------------- |
-| Framework | Next.js 16        |
-| UI        | React 19          |
-| Styling   | Tailwind CSS 4    |
+| Layer     | Technology          |
+| --------- | ------------------- |
+| Framework | Next.js 16          |
+| UI        | React 19            |
+| Styling   | Tailwind CSS 4      |
 | Language  | TypeScript (strict) |
-| Data      | PokéAPI REST      |
+| Data      | PokéAPI REST        |
 | Testing   | pytest + Playwright |
-| CI/CD     | GitHub Actions    |
-| Hosting   | Vercel            |
+| CI/CD     | GitHub Actions      |
+| Hosting   | Vercel              |
 
 ## Contributing
 

@@ -26,8 +26,16 @@ describe("getEnglishFlavorText", () => {
       name: "overgrow",
       flavor_text_entries: [
         { flavor_text: "Beschreibung", language: { name: "de" }, version_group: { name: "x-y" } },
-        { flavor_text: "Powers up Grass-type moves.", language: { name: "en" }, version_group: { name: "x-y" } },
-        { flavor_text: "Boosts Grass moves in a pinch.", language: { name: "en" }, version_group: { name: "sword-shield" } },
+        {
+          flavor_text: "Powers up Grass-type moves.",
+          language: { name: "en" },
+          version_group: { name: "x-y" },
+        },
+        {
+          flavor_text: "Boosts Grass moves in a pinch.",
+          language: { name: "en" },
+          version_group: { name: "sword-shield" },
+        },
       ],
     };
     expect(getEnglishFlavorText(ability)).toBe("Boosts Grass moves in a pinch.");

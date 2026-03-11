@@ -93,9 +93,7 @@ export async function fetchAbilityData(url: string): Promise<AbilityData> {
 }
 
 export function getEnglishFlavorText(ability: AbilityData): string {
-  const entry = ability.flavor_text_entries
-    .filter((e) => e.language.name === "en")
-    .pop();
+  const entry = ability.flavor_text_entries.filter((e) => e.language.name === "en").pop();
   return entry?.flavor_text ?? "No description available.";
 }
 
@@ -104,8 +102,5 @@ export function formatDexNumber(id: number): string {
 }
 
 export function getFrlgSprite(pokemon: PokemonData): string | null {
-  return (
-    pokemon.sprites.versions?.["generation-iii"]?.["firered-leafgreen"]
-      ?.front_default ?? null
-  );
+  return pokemon.sprites.versions?.["generation-iii"]?.["firered-leafgreen"]?.front_default ?? null;
 }

@@ -34,9 +34,7 @@ export function calculateEffectiveness(typeDataArray: TypeData[]): TypeMultiplie
 }
 
 export function getWeaknesses(effectiveness: TypeMultiplier[]): TypeMultiplier[] {
-  return effectiveness
-    .filter((e) => e.multiplier > 1)
-    .sort((a, b) => b.multiplier - a.multiplier);
+  return effectiveness.filter((e) => e.multiplier > 1).sort((a, b) => b.multiplier - a.multiplier);
 }
 
 export function getResistances(effectiveness: TypeMultiplier[]): TypeMultiplier[] {

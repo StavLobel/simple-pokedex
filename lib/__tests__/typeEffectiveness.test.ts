@@ -45,9 +45,7 @@ describe("calculateEffectiveness", () => {
   });
 
   it("returns x0 for types in no_damage_from", () => {
-    const result = calculateEffectiveness([
-      makeTypeData({ no_damage_from: [{ name: "ghost" }] }),
-    ]);
+    const result = calculateEffectiveness([makeTypeData({ no_damage_from: [{ name: "ghost" }] })]);
     const ghost = result.find((r) => r.type === "ghost");
     expect(ghost?.multiplier).toBe(0);
   });
