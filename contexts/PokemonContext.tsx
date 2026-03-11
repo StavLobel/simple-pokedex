@@ -7,7 +7,7 @@ import {
   useState,
   type ReactNode,
 } from "react";
-import { fetchAllPokemon, type PokemonListEntry } from "@/lib/pokeapi";
+import { fetchAllPokemon } from "@/lib/pokeapi";
 import { FRLG_POKEMON_IDS, extractIdFromUrl } from "@/lib/frlg-pokemon";
 
 export interface PokemonEntry {
