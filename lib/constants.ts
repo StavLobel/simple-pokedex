@@ -109,6 +109,38 @@ export const GENERATION_SPRITE_KEYS: Record<GenerationName, string[]> = {
   "generation-ix": ["scarlet-violet"],
 };
 
+export const GAME_DISPLAY_NAMES: Record<string, string> = {
+  "red-blue": "Red / Blue",
+  yellow: "Yellow",
+  crystal: "Crystal",
+  gold: "Gold",
+  silver: "Silver",
+  "firered-leafgreen": "FireRed / LeafGreen",
+  "ruby-sapphire": "Ruby / Sapphire",
+  emerald: "Emerald",
+  "heartgold-soulsilver": "HeartGold / SoulSilver",
+  platinum: "Platinum",
+  "diamond-pearl": "Diamond / Pearl",
+  "black-white": "Black / White",
+  "x-y": "X / Y",
+  "omegaruby-alphasapphire": "Omega Ruby / Alpha Sapphire",
+  "ultra-sun-ultra-moon": "Ultra Sun / Ultra Moon",
+  "brilliant-diamond-shining-pearl": "Brilliant Diamond / Shining Pearl",
+  "scarlet-violet": "Scarlet / Violet",
+};
+
+export const GENERATION_SHORT_LABELS: Record<GenerationName, string> = {
+  "generation-i": "Gen I",
+  "generation-ii": "Gen II",
+  "generation-iii": "Gen III",
+  "generation-iv": "Gen IV",
+  "generation-v": "Gen V",
+  "generation-vi": "Gen VI",
+  "generation-vii": "Gen VII",
+  "generation-viii": "Gen VIII",
+  "generation-ix": "Gen IX",
+};
+
 export const TYPES_BY_GENERATION: Record<GenerationName, readonly PokemonTypeName[]> = {
   "generation-i": [
     "normal",

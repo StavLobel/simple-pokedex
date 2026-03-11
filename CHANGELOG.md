@@ -5,6 +5,23 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [26.3.10] - 2026-03-11
+
+### Added
+
+- Main sprite now always shows the canonical `front_default`; generation-specific sprites moved to a new gallery section with a dropdown (Issue #14)
+- Hold-to-reveal shiny interaction on both main sprite and gallery sprites using Pointer Events; Gen I disables the interaction since shinies didn't exist (Issue #12)
+- Evolution chain display below the Pokémon card with sprites, arrows, and generation-aware evolution methods; supports linear, branching, and single-stage Pokémon (Issue #13)
+- Regional variants selector dropdown near the Pokémon name; filters variants by selected generation and re-fetches card data on variant change (Issue #5)
+- New components: `SpriteGallery`, `EvolutionChain`
+- New utility modules: `lib/evolution-utils.ts`, `lib/variant-utils.ts`
+- New fetch functions: `fetchSpeciesData`, `fetchEvolutionChain`, `extractIdFromUrl`
+- Python mirrors: `app/evolution_utils.py`, `app/variant_utils.py`
+- Unit tests for evolution chain flattening, method formatting, generation filtering, variant detection, name parsing, and generation-based variant filtering
+- Integration tests for PokéAPI species, evolution chain, and varieties endpoints
+- E2E tests for sprite gallery, shiny hold, evolution chain display, and regional variants
+- Updated STP with test sections (§4.7, §4.8, §5.5, §5.6, §6.12–§6.15) and traceability matrix entries for Issues #5, #12, #13, #14
+
 ## [26.3.5] - 2026-03-11
 
 ### Fixed

@@ -8,6 +8,7 @@ export interface PokemonData {
   name: string;
   sprites: {
     front_default: string | null;
+    front_shiny: string | null;
     other: {
       "official-artwork": {
         front_default: string | null;
@@ -15,7 +16,8 @@ export interface PokemonData {
     };
     versions: Record<
       string,
-      Record<string, { front_default: string | null } | undefined> | undefined
+      | Record<string, { front_default: string | null; front_shiny: string | null } | undefined>
+      | undefined
     >;
   };
   types: {
@@ -89,6 +91,47 @@ export interface AbilityData {
   flavor_text_entries: AbilityFlavorEntry[];
 }
 
+export interface SpeciesVariety {
+  is_default: boolean;
+  pokemon: { name: string; url: string };
+}
+
+export interface SpeciesData {
+  id: number;
+  name: string;
+  evolution_chain: { url: string };
+  varieties: SpeciesVariety[];
+}
+
+export interface EvolutionDetail {
+  min_level: number | null;
+  trigger: { name: string; url: string } | null;
+  item: { name: string; url: string } | null;
+  held_item: { name: string; url: string } | null;
+  min_happiness: number | null;
+  time_of_day: string;
+  location: { name: string; url: string } | null;
+  known_move_type: { name: string; url: string } | null;
+  known_move: { name: string; url: string } | null;
+  gender: number | null;
+  min_beauty: number | null;
+  min_affection: number | null;
+  relative_physical_stats: number | null;
+  needs_overworld_rain: boolean;
+  turn_upside_down: boolean;
+}
+
+export interface EvolutionChainLink {
+  species: { name: string; url: string };
+  evolution_details: EvolutionDetail[];
+  evolves_to: EvolutionChainLink[];
+}
+
+export interface EvolutionChainData {
+  id: number;
+  chain: EvolutionChainLink;
+}
+
 import { POKEAPI_BASE_URL } from "./constants";
 
 const BASE_URL = POKEAPI_BASE_URL;
@@ -125,4 +168,21 @@ export function getEnglishFlavorText(ability: AbilityData): string {
 
 export function formatDexNumber(id: number): string {
   return `#${String(id).padStart(3, "0")}`;
+}
+
+export async function fetchSpeciesData(nameOrId: string | number): Promise<SpeciesData> {
+  const res = await fetch(`${BASE_URL}/pokemon-species/${nameOrId}`);
+  if (!res.ok) throw new Error(`Failed to fetch species: ${nameOrId}`);
+  return res.json();
+}
+
+export async function fetchEvolutionChain(url: string): Promise<EvolutionChainData> {
+  const res = await fetch(url);
+  if (!res.ok) throw new Error("Failed to fetch evolution chain");
+  return res.json();
+}
+
+export function extractIdFromUrl(url: string): number {
+  const parts = url.replace(/\/$/, "").split("/");
+  return Number(parts[parts.length - 1]);
 }

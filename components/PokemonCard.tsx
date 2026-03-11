@@ -1,16 +1,18 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import Image from "next/image";
 import {
   fetchPokemonData,
   fetchTypeData,
   fetchAbilityData,
+  fetchSpeciesData,
   getEnglishFlavorText,
   formatDexNumber,
   type PokemonData,
   type TypeData,
   type AbilityData,
+  type SpeciesVariety,
 } from "@/lib/pokeapi";
 import {
   calculateEffectiveness,
@@ -25,12 +27,14 @@ import {
   resolveAbilitiesForGeneration,
   resolveStatsForGeneration,
   resolveDamageRelationsForGeneration,
-  getSpriteForGeneration,
 } from "@/lib/generation-resolver";
 import { useGeneration } from "@/contexts/GenerationContext";
+import { getAvailableVariants, hasRegionalVariants, type VariantOption } from "@/lib/variant-utils";
 import TypeBadge from "./TypeBadge";
 import WeaknessGrid from "./WeaknessGrid";
 import AbilityModal from "./AbilityModal";
+import SpriteGallery from "./SpriteGallery";
+import EvolutionChain from "./EvolutionChain";
 
 interface PokemonCardProps {
   pokemonName: string;
@@ -73,7 +77,54 @@ export default function PokemonCard({ pokemonName }: PokemonCardProps) {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [modalAbility, setModalAbility] = useState<AbilityInfo | null>(null);
+  const [isHoldingShiny, setIsHoldingShiny] = useState(false);
 
+  const [varieties, setVarieties] = useState<SpeciesVariety[]>([]);
+  const [selectedVariant, setSelectedVariant] = useState<string>(pokemonName);
+  const [variantOptions, setVariantOptions] = useState<VariantOption[]>([]);
+
+  const handlePointerDown = useCallback(() => setIsHoldingShiny(true), []);
+  const handlePointerUp = useCallback(() => setIsHoldingShiny(false), []);
+
+  // Fetch species data to discover variants
+  useEffect(() => {
+    let cancelled = false;
+
+    async function loadSpecies() {
+      try {
+        const species = await fetchSpeciesData(pokemonName);
+        if (cancelled) return;
+        setVarieties(species.varieties);
+      } catch {
+        if (!cancelled) setVarieties([]);
+      }
+    }
+
+    setSelectedVariant(pokemonName);
+    loadSpecies();
+    return () => {
+      cancelled = true;
+    };
+  }, [pokemonName]);
+
+  // Update available variant options when generation or varieties change
+  useEffect(() => {
+    if (varieties.length <= 1 || !hasRegionalVariants(varieties, pokemonName)) {
+      setVariantOptions([]);
+      return;
+    }
+
+    const options = getAvailableVariants(varieties, pokemonName, generation);
+    setVariantOptions(options);
+
+    // Reset to standard if current variant is no longer available
+    if (!options.some((o) => o.name === selectedVariant)) {
+      const defaultOpt = options.find((o) => o.isDefault);
+      setSelectedVariant(defaultOpt?.name ?? pokemonName);
+    }
+  }, [varieties, generation, pokemonName, selectedVariant]);
+
+  // Fetch pokemon data for the selected variant
   useEffect(() => {
     let cancelled = false;
     setLoading(true);
@@ -81,7 +132,7 @@ export default function PokemonCard({ pokemonName }: PokemonCardProps) {
 
     async function loadData() {
       try {
-        const pData = await fetchPokemonData(pokemonName);
+        const pData = await fetchPokemonData(selectedVariant);
         if (cancelled) return;
 
         pData.types = resolveTypesForGeneration(pData.types, pData.past_types, generation);
@@ -138,7 +189,7 @@ export default function PokemonCard({ pokemonName }: PokemonCardProps) {
     return () => {
       cancelled = true;
     };
-  }, [pokemonName, generation]);
+  }, [selectedVariant, generation]);
 
   if (loading) {
     return (
@@ -157,7 +208,11 @@ export default function PokemonCard({ pokemonName }: PokemonCardProps) {
     );
   }
 
-  const sprite = getSpriteForGeneration(pokemon.sprites, generation);
+  const mainSprite =
+    isHoldingShiny && pokemon.sprites.front_shiny
+      ? pokemon.sprites.front_shiny
+      : pokemon.sprites.front_default;
+  const hasShiny = !!pokemon.sprites.front_shiny;
 
   return (
     <>
@@ -165,24 +220,30 @@ export default function PokemonCard({ pokemonName }: PokemonCardProps) {
         {/* Left column — Sprite */}
         <div className="flex items-start justify-center">
           <div
-            className="flex aspect-square w-full max-w-sm items-center justify-center rounded-2xl bg-transparent"
+            className={`flex aspect-square w-full max-w-sm items-center justify-center rounded-2xl bg-transparent${
+              hasShiny ? " cursor-pointer select-none" : ""
+            }`}
+            data-testid="main-sprite-container"
             style={{
               backgroundImage: "url(/pokeball.png)",
               backgroundSize: "85%",
               backgroundPosition: "center",
               backgroundRepeat: "no-repeat",
             }}
+            onPointerDown={hasShiny ? handlePointerDown : undefined}
+            onPointerUp={hasShiny ? handlePointerUp : undefined}
+            onPointerLeave={hasShiny ? handlePointerUp : undefined}
+            onPointerCancel={hasShiny ? handlePointerUp : undefined}
           >
-            {sprite.url ? (
+            {mainSprite ? (
               <Image
-                src={sprite.url}
+                src={mainSprite}
                 alt={pokemon.name}
                 width={400}
                 height={400}
                 className={`relative z-10 h-auto w-full drop-shadow-lg${
-                  sprite.isPixelArt ? " image-rendering-pixelated" : ""
+                  isHoldingShiny ? " animate-pulse brightness-110" : ""
                 }`}
-                unoptimized={sprite.isPixelArt}
                 priority
               />
             ) : (
@@ -195,7 +256,23 @@ export default function PokemonCard({ pokemonName }: PokemonCardProps) {
         <div className="space-y-6">
           <div>
             <p className="font-mono text-sm text-muted">{formatDexNumber(pokemon.id)}</p>
-            <h2 className="text-3xl font-bold capitalize text-foreground">{pokemon.name}</h2>
+            <div className="flex items-center gap-3">
+              <h2 className="text-3xl font-bold capitalize text-foreground">{pokemon.name}</h2>
+              {variantOptions.length > 1 && (
+                <select
+                  value={selectedVariant}
+                  onChange={(e) => setSelectedVariant(e.target.value)}
+                  className="rounded-lg border border-foreground/15 bg-background px-2 py-1 text-sm text-foreground"
+                  data-testid="variant-selector"
+                >
+                  {variantOptions.map((v) => (
+                    <option key={v.name} value={v.name}>
+                      {v.label}
+                    </option>
+                  ))}
+                </select>
+              )}
+            </div>
           </div>
 
           {/* Types */}
@@ -261,6 +338,10 @@ export default function PokemonCard({ pokemonName }: PokemonCardProps) {
           <WeaknessGrid weaknesses={weaknesses} resistances={resistances} immunities={immunities} />
         </div>
       </div>
+
+      <EvolutionChain pokemonName={pokemonName} pokemonId={pokemon.id} generation={generation} />
+
+      <SpriteGallery sprites={pokemon.sprites} />
 
       {modalAbility && (
         <AbilityModal

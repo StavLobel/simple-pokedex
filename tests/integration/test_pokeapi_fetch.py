@@ -122,3 +122,39 @@ class TestPastDataFields:
             if a["ability"] is not None
         ]
         assert "levitate" in ability_names
+
+
+class TestSpeciesVarieties:
+    """Issue #5: Verify species varieties endpoint for regional variants."""
+
+    def test_species_varieties_endpoint(self):
+        resp = httpx.get(f"{POKEAPI_BASE}/pokemon-species/37")
+        assert resp.status_code == 200
+        data = resp.json()
+        varieties = data["varieties"]
+        names = [v["pokemon"]["name"] for v in varieties]
+        assert "vulpix" in names
+        assert "vulpix-alola" in names
+
+    def test_variant_pokemon_data_fetchable(self):
+        resp = httpx.get(f"{POKEAPI_BASE}/pokemon/vulpix-alola")
+        assert resp.status_code == 200
+        data = resp.json()
+        type_names = [t["type"]["name"] for t in data["types"]]
+        assert "ice" in type_names
+        assert data["sprites"]["front_default"] is not None
+
+    def test_pokemon_without_variants(self):
+        resp = httpx.get(f"{POKEAPI_BASE}/pokemon-species/25")
+        assert resp.status_code == 200
+        data = resp.json()
+        regional_names = [
+            v["pokemon"]["name"]
+            for v in data["varieties"]
+            if not v["is_default"]
+            and any(
+                v["pokemon"]["name"].endswith(f"-{suffix}")
+                for suffix in ("alola", "galar", "hisui", "paldea")
+            )
+        ]
+        assert len(regional_names) == 0

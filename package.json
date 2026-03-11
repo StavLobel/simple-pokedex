@@ -1,6 +1,6 @@
 {
   "name": "simple_pokedex",
-  "version": "26.3.5",
+  "version": "26.3.10",
   "private": true,
   "description": "A web-based Pokédex app with autocomplete search, official artwork, type effectiveness, and ability descriptions. Powered by PokéAPI.",
   "author": "Stav Lobel",

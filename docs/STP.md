@@ -53,11 +53,14 @@ tests/
 │   ├── test_language_filter.py
 │   ├── test_versioning.py
 │   ├── test_generation_resolver.py
+│   ├── test_evolution_chain.py
+│   ├── test_regional_variants.py
 │   └── (TS) lib/__tests__/constants.test.ts
 ├── integration/
 │   ├── test_pokeapi_fetch.py
 │   ├── test_data_pipeline.py
-│   └── test_versioning.py
+│   ├── test_versioning.py
+│   └── test_evolution_chain.py
 └── e2e/
     ├── test_search_flow.py
     ├── test_pokemon_display.py
@@ -67,7 +70,11 @@ tests/
     ├── test_legal_pages.py
     ├── test_generation_selector.py
     ├── test_generation_filter.py
-    └── test_sprite_sizing.py
+    ├── test_sprite_sizing.py
+    ├── test_sprite_gallery.py
+    ├── test_shiny_hold.py
+    ├── test_evolution_chain.py
+    └── test_regional_variants.py
 ```
 
 ### 2.3 Conventions
@@ -461,6 +468,59 @@ class TestSpriteResolution:
     def test_sprite_fallback_none_when_all_null(self): ...
 ```
 
+### 4.7 Evolution Chain Utilities
+
+**File:** `tests/unit/test_evolution_chain.py`
+**Traces to:** Issue #13
+
+Tests chain flattening, evolution method formatting (level, trade, item, happiness), generation-aware method selection (Leafeon/Glaceon), and generation availability checks.
+
+```python
+class TestFlattenChain:
+    def test_linear_chain_structure(self, bulbasaur_chain): ...
+    def test_single_stage_pokemon(self): ...
+    def test_extract_id_from_species_url(self): ...
+
+class TestFormatEvolutionMethod:
+    def test_level_up_method(self, bulbasaur_chain): ...
+    def test_trade_method(self, trade_chain): ...
+    def test_item_method(self, item_evolution_detail): ...
+    def test_trade_with_held_item(self): ...
+    def test_happiness_method(self): ...
+    def test_empty_details(self): ...
+    def test_leafeon_gen4_uses_location(self, leafeon_details): ...
+    def test_leafeon_gen8_uses_item(self, leafeon_details): ...
+
+class TestGenerationAvailability:
+    def test_gen1_pokemon_available_in_gen1(self): ...
+    def test_gen4_pokemon_not_in_gen3(self): ...
+    def test_gen4_pokemon_in_gen4(self): ...
+```
+
+### 4.8 Regional Variant Utilities
+
+**File:** `tests/unit/test_regional_variants.py`
+**Traces to:** Issue #5
+
+Tests variant detection, name parsing (e.g. `vulpix-alola` -> "Alolan"), and generation-based filtering of available variants.
+
+```python
+class TestVariantDetection:
+    def test_vulpix_has_alolan_variant(self, vulpix_varieties): ...
+    def test_pikachu_has_no_regional_variant(self, pikachu_varieties): ...
+    def test_meowth_has_variants(self, meowth_varieties): ...
+
+class TestVariantNameParsing:
+    def test_variant_names_parsed_correctly(self): ...
+    def test_standard_form_label(self): ...
+
+class TestVariantGenerationFilter:
+    def test_variants_filtered_by_generation_gen3(self, vulpix_varieties): ...
+    def test_variants_available_in_gen7(self, vulpix_varieties): ...
+    def test_meowth_galarian_only_in_gen8(self, meowth_varieties): ...
+    def test_standard_always_included(self, vulpix_varieties): ...
+```
+
 ---
 
 ## 5. Test Cases — Integration Tests
@@ -654,6 +714,36 @@ class TestPastDataFields:
     def test_past_damage_relations_field_exists(self): ...
     def test_gen2_pokemon_has_gen3_sprite(self): ...
     def test_fr3_frlg_ability_override_applied(self): ...
+```
+
+### 5.5 Evolution Chain Fetch
+
+**File:** `tests/integration/test_evolution_chain.py`
+**Traces to:** Issue #13
+
+Tests that PokéAPI species and evolution chain endpoints return correct data structures for linear, branching, and single-stage Pokémon.
+
+```python
+class TestEvolutionChainFetch:
+    def test_species_has_evolution_chain_url(self): ...
+    def test_evolution_chain_has_recursive_structure(self): ...
+    def test_eevee_has_branching_evolutions(self): ...
+    def test_tauros_has_no_evolutions(self): ...
+    def test_evolution_details_fields(self): ...
+```
+
+### 5.6 Species Varieties (Regional Variants)
+
+**File:** `tests/integration/test_pokeapi_fetch.py`
+**Traces to:** Issue #5
+
+Tests that PokéAPI species endpoint returns varieties data for Pokémon with regional forms, and that variant data is fetchable.
+
+```python
+class TestSpeciesVarieties:
+    def test_species_varieties_endpoint(self): ...
+    def test_variant_pokemon_data_fetchable(self): ...
+    def test_pokemon_without_variants(self): ...
 ```
 
 ---
@@ -1110,6 +1200,69 @@ class TestSpriteSizing:
     def test_sprite_maintains_aspect_ratio(self, page): ...
 ```
 
+### 6.12 Sprite Gallery
+
+**File:** `tests/e2e/test_sprite_gallery.py`
+**Traces to:** Issue #14
+
+Tests that the main sprite always uses `front_default`, and a generation sprite gallery with a dropdown appears below the card.
+
+```python
+class TestSpriteGallery:
+    def test_main_sprite_is_front_default(self, page): ...
+    def test_gallery_section_visible(self, page): ...
+    def test_gallery_dropdown_has_options(self, page): ...
+    def test_gallery_dropdown_changes_sprite(self, page): ...
+    def test_gallery_not_shown_for_invalid_pokemon(self, page): ...
+```
+
+### 6.13 Shiny Hold
+
+**File:** `tests/e2e/test_shiny_hold.py`
+**Traces to:** Issue #12
+
+Tests that holding the sprite shows the shiny variant and releasing reverts it, with no layout shift.
+
+```python
+class TestShinyHold:
+    def test_holding_main_sprite_shows_shiny(self, page): ...
+    def test_releasing_main_sprite_reverts(self, page): ...
+    def test_gallery_sprite_shiny_hold(self, page): ...
+    def test_no_layout_shift_on_shiny_swap(self, page): ...
+```
+
+### 6.14 Evolution Chain Display
+
+**File:** `tests/e2e/test_evolution_chain.py`
+**Traces to:** Issue #13
+
+Tests that the evolution chain section renders correctly for linear chains (Bulbasaur), branching evolutions (Eevee), and single-stage Pokémon (Tauros).
+
+```python
+class TestEvolutionChainDisplay:
+    def test_bulbasaur_shows_three_stage_chain(self, page): ...
+    def test_evolution_arrows_show_methods(self, page): ...
+    def test_tauros_shows_no_evolution(self, page): ...
+    def test_current_pokemon_highlighted(self, page): ...
+    def test_eevee_shows_branching_evolutions(self, page): ...
+```
+
+### 6.15 Regional Variants
+
+**File:** `tests/e2e/test_regional_variants.py`
+**Traces to:** Issue #5
+
+Tests that the variant dropdown appears for Pokémon with regional forms, is hidden for those without, and that selecting a variant updates the card data.
+
+```python
+class TestRegionalVariants:
+    def test_variant_dropdown_visible_for_vulpix(self, page): ...
+    def test_variant_dropdown_hidden_for_pikachu(self, page): ...
+    def test_selecting_alolan_updates_card(self, page): ...
+    def test_variant_sprite_updates(self, page): ...
+    def test_variant_hidden_in_earlier_gen(self, page): ...
+```
+
 ---
 
 ## 7. Non-Functional Test Cases
@@ -1143,28 +1296,32 @@ class TestSearchPerformance:
 
 ## 8. Traceability Matrix
 
-| SRS Requirement             | Test ID(s)                                                                                                                                                                                                                                                                                                                                                                                                                                                         | Level                  |
-| --------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ | ---------------------- |
-| **FR-1** Global Cache       | `test_fr1_pokemon_list_fetched`, `test_fr1_each_entry_has_name_and_url`, `test_fr1_search_bar_visible`                                                                                                                                                                                                                                                                                                                                                             | Integration, E2E       |
-| **FR-2** Search Logic       | `test_fr2_filter_by_prefix`, `test_fr2_no_results_for_gibberish`, `test_fr2_case_insensitive`, `test_fr2_autocomplete_*`                                                                                                                                                                                                                                                                                                                                           | Integration, E2E       |
-| **FR-3** Data Fetching      | `test_fr3_base_data_fields`, `test_fr3_type_damage_relations`, `test_fr3_ability_effect_entries`, `test_fr3_full_pipeline`                                                                                                                                                                                                                                                                                                                                         | Integration            |
-| **FR-4** Official Artwork   | `test_fr4_artwork_url_exists`, `test_fr4_image_rendered`, `test_fr4_image_not_broken`                                                                                                                                                                                                                                                                                                                                                                              | Integration, E2E       |
-| **FR-5** ID Formatting      | `test_fr5_leading_zeros`, `test_fr5_zero_id_rejected`, `test_fr5_negative_id_rejected`, `test_fr5_leading_zeros_displayed`, `test_fr5_three_digit_id`                                                                                                                                                                                                                                                                                                              | Unit, E2E              |
-| **FR-6** Multiplier Calc    | `test_fr6_super_effective`, `test_fr6_4x_weakness`, `test_fr6_immunity`, `test_fr6_cancel_out`, `test_fr6_*`                                                                                                                                                                                                                                                                                                                                                       | Unit, E2E              |
-| **FR-7** Filtered Results   | `test_fr7_weaknesses_only`, `test_fr7_no_false_weaknesses`, `test_fr7_resistances_not_in_weakness_grid`                                                                                                                                                                                                                                                                                                                                                            | Unit, E2E              |
-| **FR-8** Ability Popups     | `test_fr8_ability_clickable`, `test_fr8_modal_opens`, `test_fr8_modal_close_*`                                                                                                                                                                                                                                                                                                                                                                                     | E2E                    |
-| **FR-9** Language Filter    | `test_fr9_english_extracted`, `test_fr9_non_english_excluded`, `test_fr9_missing_english_*`, `test_fr9_english_description_shown`                                                                                                                                                                                                                                                                                                                                  | Unit, E2E              |
-| **NFR** Performance         | `test_nfr_filter_under_100ms`                                                                                                                                                                                                                                                                                                                                                                                                                                      | Unit                   |
-| **NFR** Accessibility       | `test_fr8_modal_close_esc_key`, `test_fr8_modal_close_x_button`                                                                                                                                                                                                                                                                                                                                                                                                    | E2E                    |
-| **NFR** Availability        | `test_nfr_invalid_pokemon_shows_error`, `test_nfr_app_loads_without_crash`, `test_nfr_no_console_errors_on_load`                                                                                                                                                                                                                                                                                                                                                   | E2E                    |
-| **§4.2** Layout             | `test_desktop_two_column_layout`, `test_mobile_single_column`                                                                                                                                                                                                                                                                                                                                                                                                      | E2E                    |
-| **Issue #7** Legal Pages    | `test_footer_contains_pokeapi_attribution`, `test_footer_contains_trademark_disclaimer`, `test_terms_page_accessible`, `test_privacy_page_accessible`, `test_terms_page_has_required_sections`, `test_privacy_page_has_required_sections`, `test_footer_links_present_on_all_pages`                                                                                                                                                                                | E2E                    |
-| **Issue #8** Versioning     | `test_package_json_has_version`, `test_version_follows_semver`, `test_changelog_exists`, `test_changelog_has_current_version_entry`, `test_git_tag_matches_package_version`                                                                                                                                                                                                                                                                                        | Unit, Integration      |
-| **Issue #1** FRLG Abilities | `test_gengar_has_levitate_in_gen3`, `test_gengar_has_cursed_body_in_gen9`, `test_null_ability_slot_removed`, `test_multiple_past_entries_earliest_wins`, `test_past_abilities_field_exists`, `test_fr3_frlg_ability_override_applied`, `test_gengar_shows_levitate_gen3`, `test_gengar_shows_cursed_body_gen9`                                                                                                                                                     | Unit, Integration, E2E |
-| **Issue #2** Gen2 Sprites   | `test_sprite_frlg_first`, `test_sprite_fallback_ruby_sapphire`, `test_sprite_fallback_official_artwork`, `test_gen2_pokemon_has_gen3_sprite`, `test_gen2_pokemon_pixel_sprite_gen3`                                                                                                                                                                                                                                                                                | Unit, Integration, E2E |
-| **Issue #9** Gen Filter     | `test_gen_dropdown_filters_after_gen5_pokemon`, `test_gen_dropdown_shows_all_for_gen1_pokemon`, `test_gen_auto_switches_to_pokemon_generation`, `test_gen_stays_when_selecting_earlier_pokemon`, `test_autocomplete_shows_gen5_pokemon_on_gen3`, `test_autocomplete_shows_gen9_pokemon`, `getGenerationForId (vitest)`, `generationIndex (vitest)`                                                                                                                 | Unit, E2E              |
-| **Issue #10** Sprite Sizing | `test_sprite_fills_container_official_artwork`, `test_sprite_fills_container_gen_sprite`, `test_sprite_maintains_aspect_ratio`                                                                                                                                                                                                                                                                                                                                     | E2E                    |
-| **Issue #4** Gen Selector   | `test_gen3_types_no_fairy`, `test_gen6_introduces_fairy`, `test_pikachu_stats_gen3`, `test_steel_resists_ghost_dark_gen3`, `test_steel_not_resist_ghost_dark_gen6`, `test_past_types_field_exists`, `test_past_stats_field_exists`, `test_past_damage_relations_field_exists`, `test_gen_selector_visible`, `test_default_gen_is_gen3`, `test_clefairy_normal_gen3`, `test_clefairy_fairy_gen6`, `test_switching_gen_updates_pokemon_list`, `test_stats_displayed` | Unit, Integration, E2E |
+| SRS Requirement                | Test ID(s)                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                   | Level                  |
+| ------------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ | ---------------------- |
+| **FR-1** Global Cache          | `test_fr1_pokemon_list_fetched`, `test_fr1_each_entry_has_name_and_url`, `test_fr1_search_bar_visible`                                                                                                                                                                                                                                                                                                                                                                                                                                                       | Integration, E2E       |
+| **FR-2** Search Logic          | `test_fr2_filter_by_prefix`, `test_fr2_no_results_for_gibberish`, `test_fr2_case_insensitive`, `test_fr2_autocomplete_*`                                                                                                                                                                                                                                                                                                                                                                                                                                     | Integration, E2E       |
+| **FR-3** Data Fetching         | `test_fr3_base_data_fields`, `test_fr3_type_damage_relations`, `test_fr3_ability_effect_entries`, `test_fr3_full_pipeline`                                                                                                                                                                                                                                                                                                                                                                                                                                   | Integration            |
+| **FR-4** Official Artwork      | `test_fr4_artwork_url_exists`, `test_fr4_image_rendered`, `test_fr4_image_not_broken`                                                                                                                                                                                                                                                                                                                                                                                                                                                                        | Integration, E2E       |
+| **FR-5** ID Formatting         | `test_fr5_leading_zeros`, `test_fr5_zero_id_rejected`, `test_fr5_negative_id_rejected`, `test_fr5_leading_zeros_displayed`, `test_fr5_three_digit_id`                                                                                                                                                                                                                                                                                                                                                                                                        | Unit, E2E              |
+| **FR-6** Multiplier Calc       | `test_fr6_super_effective`, `test_fr6_4x_weakness`, `test_fr6_immunity`, `test_fr6_cancel_out`, `test_fr6_*`                                                                                                                                                                                                                                                                                                                                                                                                                                                 | Unit, E2E              |
+| **FR-7** Filtered Results      | `test_fr7_weaknesses_only`, `test_fr7_no_false_weaknesses`, `test_fr7_resistances_not_in_weakness_grid`                                                                                                                                                                                                                                                                                                                                                                                                                                                      | Unit, E2E              |
+| **FR-8** Ability Popups        | `test_fr8_ability_clickable`, `test_fr8_modal_opens`, `test_fr8_modal_close_*`                                                                                                                                                                                                                                                                                                                                                                                                                                                                               | E2E                    |
+| **FR-9** Language Filter       | `test_fr9_english_extracted`, `test_fr9_non_english_excluded`, `test_fr9_missing_english_*`, `test_fr9_english_description_shown`                                                                                                                                                                                                                                                                                                                                                                                                                            | Unit, E2E              |
+| **NFR** Performance            | `test_nfr_filter_under_100ms`                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                | Unit                   |
+| **NFR** Accessibility          | `test_fr8_modal_close_esc_key`, `test_fr8_modal_close_x_button`                                                                                                                                                                                                                                                                                                                                                                                                                                                                                              | E2E                    |
+| **NFR** Availability           | `test_nfr_invalid_pokemon_shows_error`, `test_nfr_app_loads_without_crash`, `test_nfr_no_console_errors_on_load`                                                                                                                                                                                                                                                                                                                                                                                                                                             | E2E                    |
+| **§4.2** Layout                | `test_desktop_two_column_layout`, `test_mobile_single_column`                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                | E2E                    |
+| **Issue #7** Legal Pages       | `test_footer_contains_pokeapi_attribution`, `test_footer_contains_trademark_disclaimer`, `test_terms_page_accessible`, `test_privacy_page_accessible`, `test_terms_page_has_required_sections`, `test_privacy_page_has_required_sections`, `test_footer_links_present_on_all_pages`                                                                                                                                                                                                                                                                          | E2E                    |
+| **Issue #8** Versioning        | `test_package_json_has_version`, `test_version_follows_semver`, `test_changelog_exists`, `test_changelog_has_current_version_entry`, `test_git_tag_matches_package_version`                                                                                                                                                                                                                                                                                                                                                                                  | Unit, Integration      |
+| **Issue #1** FRLG Abilities    | `test_gengar_has_levitate_in_gen3`, `test_gengar_has_cursed_body_in_gen9`, `test_null_ability_slot_removed`, `test_multiple_past_entries_earliest_wins`, `test_past_abilities_field_exists`, `test_fr3_frlg_ability_override_applied`, `test_gengar_shows_levitate_gen3`, `test_gengar_shows_cursed_body_gen9`                                                                                                                                                                                                                                               | Unit, Integration, E2E |
+| **Issue #2** Gen2 Sprites      | `test_sprite_frlg_first`, `test_sprite_fallback_ruby_sapphire`, `test_sprite_fallback_official_artwork`, `test_gen2_pokemon_has_gen3_sprite`, `test_gen2_pokemon_pixel_sprite_gen3`                                                                                                                                                                                                                                                                                                                                                                          | Unit, Integration, E2E |
+| **Issue #9** Gen Filter        | `test_gen_dropdown_filters_after_gen5_pokemon`, `test_gen_dropdown_shows_all_for_gen1_pokemon`, `test_gen_auto_switches_to_pokemon_generation`, `test_gen_stays_when_selecting_earlier_pokemon`, `test_autocomplete_shows_gen5_pokemon_on_gen3`, `test_autocomplete_shows_gen9_pokemon`, `getGenerationForId (vitest)`, `generationIndex (vitest)`                                                                                                                                                                                                           | Unit, E2E              |
+| **Issue #10** Sprite Sizing    | `test_sprite_fills_container_official_artwork`, `test_sprite_fills_container_gen_sprite`, `test_sprite_maintains_aspect_ratio`                                                                                                                                                                                                                                                                                                                                                                                                                               | E2E                    |
+| **Issue #14** Sprite Gallery   | `test_main_sprite_is_front_default`, `test_gallery_section_visible`, `test_gallery_dropdown_has_options`, `test_gallery_dropdown_changes_sprite`, `test_gallery_not_shown_for_invalid_pokemon`                                                                                                                                                                                                                                                                                                                                                               | E2E                    |
+| **Issue #12** Shiny Hold       | `test_holding_main_sprite_shows_shiny`, `test_releasing_main_sprite_reverts`, `test_gallery_sprite_shiny_hold`, `test_no_layout_shift_on_shiny_swap`                                                                                                                                                                                                                                                                                                                                                                                                         | E2E                    |
+| **Issue #13** Evolution Chain  | `test_linear_chain_structure`, `test_single_stage_pokemon`, `test_level_up_method`, `test_trade_method`, `test_item_method`, `test_leafeon_gen4_uses_location`, `test_leafeon_gen8_uses_item`, `test_species_has_evolution_chain_url`, `test_evolution_chain_has_recursive_structure`, `test_eevee_has_branching_evolutions`, `test_tauros_has_no_evolutions`, `test_bulbasaur_shows_three_stage_chain`, `test_evolution_arrows_show_methods`, `test_tauros_shows_no_evolution`, `test_current_pokemon_highlighted`, `test_eevee_shows_branching_evolutions` | Unit, Integration, E2E |
+| **Issue #5** Regional Variants | `test_vulpix_has_alolan_variant`, `test_pikachu_has_no_regional_variant`, `test_variant_names_parsed_correctly`, `test_variants_filtered_by_generation`, `test_species_varieties_endpoint`, `test_variant_pokemon_data_fetchable`, `test_variant_dropdown_visible_for_vulpix`, `test_variant_dropdown_hidden_for_pikachu`, `test_selecting_alolan_updates_card`, `test_variant_sprite_updates`, `test_variant_hidden_in_earlier_gen`                                                                                                                         | Unit, Integration, E2E |
+| **Issue #4** Gen Selector      | `test_gen3_types_no_fairy`, `test_gen6_introduces_fairy`, `test_pikachu_stats_gen3`, `test_steel_resists_ghost_dark_gen3`, `test_steel_not_resist_ghost_dark_gen6`, `test_past_types_field_exists`, `test_past_stats_field_exists`, `test_past_damage_relations_field_exists`, `test_gen_selector_visible`, `test_default_gen_is_gen3`, `test_clefairy_normal_gen3`, `test_clefairy_fairy_gen6`, `test_switching_gen_updates_pokemon_list`, `test_stats_displayed`                                                                                           | Unit, Integration, E2E |
 
 ---
 

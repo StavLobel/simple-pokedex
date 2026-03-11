@@ -1,0 +1,21 @@
+---
+description: Version numbering convention for the project
+alwaysApply: true
+---
+
+# Versioning Convention
+
+This project uses **CalVer-style** versioning: `YEAR.MONTH.PATCH`
+
+- **Major** = current year (e.g. `26` for 2026)
+- **Minor** = current month (e.g. `3` for March)
+- **Patch** = incremental release counter within the month, starting at 0
+
+Example progression for March 2026: `26.3.0` → `26.3.1` → `26.3.2` → …
+
+When a new month begins, reset the patch and bump the minor:
+`26.3.12` → `26.4.0` (April 2026)
+
+Files to update when bumping:
+1. `package.json` — `version` field
+2. `CHANGELOG.md` — add a new `## [X.Y.Z] - YYYY-MM-DD` section at the top
