@@ -8,7 +8,7 @@ interface SearchBarProps {
 }
 
 export default function SearchBar({ onSelect }: SearchBarProps) {
-  const { allPokemon, loading, error } = usePokemonList();
+  const { masterList, loading, error } = usePokemonList();
   const [query, setQuery] = useState("");
   const [filtered, setFiltered] = useState<{ name: string; id: number }[]>([]);
   const [isOpen, setIsOpen] = useState(false);
@@ -23,13 +23,13 @@ export default function SearchBar({ onSelect }: SearchBarProps) {
         return;
       }
       const lower = q.toLowerCase();
-      const results = allPokemon
+      const results = masterList
         .filter((p) => p.name.includes(lower))
         .map((p) => ({ name: p.name, id: p.id }))
         .slice(0, 20);
       setFiltered(results);
     },
-    [allPokemon],
+    [masterList],
   );
 
   function handleChange(e: React.ChangeEvent<HTMLInputElement>) {

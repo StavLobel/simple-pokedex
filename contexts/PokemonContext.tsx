@@ -14,12 +14,14 @@ export interface PokemonEntry {
 
 interface PokemonContextValue {
   allPokemon: PokemonEntry[];
+  masterList: PokemonEntry[];
   loading: boolean;
   error: string | null;
 }
 
 const PokemonContext = createContext<PokemonContextValue>({
   allPokemon: [],
+  masterList: [],
   loading: true,
   error: null,
 });
@@ -48,7 +50,7 @@ export function PokemonProvider({ children }: { children: ReactNode }) {
   }, [masterList, generation]);
 
   return (
-    <PokemonContext.Provider value={{ allPokemon, loading, error }}>
+    <PokemonContext.Provider value={{ allPokemon, masterList, loading, error }}>
       {children}
     </PokemonContext.Provider>
   );

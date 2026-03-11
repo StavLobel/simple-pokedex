@@ -5,6 +5,22 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [26.3.2] - 2026-03-11
+
+### Added
+
+- Generation dropdown filters by selected Pokémon — selecting a Gen V Pokémon hides Gen I–IV from the dropdown (Issue #9)
+- Autocomplete now suggests Pokémon from all generations regardless of the current generation selection (Issue #9)
+- `getGenerationForId` and `generationIndex` helper functions in `lib/constants.ts`
+- Vitest unit tests for generation helper utilities
+- E2E tests for generation dropdown filtering and full autocomplete behavior
+
+### Changed
+
+- `PokemonContext` now exposes `masterList` (all Pokémon) alongside generation-filtered `allPokemon`
+- `GenerationSelector` accepts optional `minGeneration` prop to constrain available options
+- Updated README with current feature set, project structure, and testing instructions
+
 ## [26.3.1] - 2026-03-11
 
 ### Changed
@@ -41,5 +57,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - GitHub issue and pull request templates
 - SRS and STP documentation in `docs/`
 
+[26.3.2]: https://github.com/StavLobel/simple-pokedex/releases/tag/v26.3.2
 [26.3.1]: https://github.com/StavLobel/simple-pokedex/releases/tag/v26.3.1
 [26.3.0]: https://github.com/StavLobel/simple-pokedex/releases/tag/v26.3.0

@@ -52,7 +52,8 @@ tests/
 │   ├── test_id_formatting.py
 │   ├── test_language_filter.py
 │   ├── test_versioning.py
-│   └── test_generation_resolver.py
+│   ├── test_generation_resolver.py
+│   └── (TS) lib/__tests__/constants.test.ts
 ├── integration/
 │   ├── test_pokeapi_fetch.py
 │   ├── test_data_pipeline.py
@@ -64,7 +65,8 @@ tests/
     ├── test_responsive_layout.py
     ├── test_error_handling.py
     ├── test_legal_pages.py
-    └── test_generation_selector.py
+    ├── test_generation_selector.py
+    └── test_generation_filter.py
 ```
 
 ### 2.3 Conventions
@@ -1051,6 +1053,48 @@ class TestGenerationSwitchingE2E:
     def test_stats_displayed(self, page): ...
 ```
 
+### 6.9 Generation Dropdown Filter & Full Autocomplete
+
+**File:** `tests/e2e/test_generation_filter.py`
+**Traces to:** Issue #9
+
+Tests that the generation dropdown filters out earlier generations when a Pokémon is selected, and that the autocomplete suggests Pokémon from all generations regardless of the current selection.
+
+```python
+class TestGenerationDropdownFilter:
+    def test_gen_dropdown_filters_after_gen5_pokemon(self, page): ...
+    def test_gen_dropdown_shows_all_for_gen1_pokemon(self, page): ...
+    def test_gen_auto_switches_to_pokemon_generation(self, page): ...
+    def test_gen_stays_when_selecting_earlier_pokemon(self, page): ...
+
+class TestAutocompleteAllPokemon:
+    def test_autocomplete_shows_gen5_pokemon_on_gen3(self, page): ...
+    def test_autocomplete_shows_gen9_pokemon(self, page): ...
+```
+
+### 6.10 Generation Helper Utilities (Vitest)
+
+**File:** `lib/__tests__/constants.test.ts`
+**Traces to:** Issue #9
+
+Unit tests for `getGenerationForId` and `generationIndex` helper functions.
+
+```typescript
+describe("getGenerationForId") {
+    it("maps Gen I Pokemon (id 1–151)") ...
+    it("maps Gen II Pokemon (id 152–251)") ...
+    it("maps Gen III Pokemon (id 252–386)") ...
+    it("maps Gen V Pokemon (id 494–649)") ...
+    it("maps Gen IX Pokemon (id 906–1025)") ...
+    it("falls back to last generation for ids beyond known range") ...
+}
+describe("generationIndex") {
+    it("returns 0 for generation-i") ...
+    it("returns 4 for generation-v") ...
+    it("returns 8 for generation-ix") ...
+}
+```
+
 ---
 
 ## 7. Non-Functional Test Cases
@@ -1103,6 +1147,7 @@ class TestSearchPerformance:
 | **Issue #8** Versioning     | `test_package_json_has_version`, `test_version_follows_semver`, `test_changelog_exists`, `test_changelog_has_current_version_entry`, `test_git_tag_matches_package_version`                                                                                                                                                                                                                                                                                        | Unit, Integration      |
 | **Issue #1** FRLG Abilities | `test_gengar_has_levitate_in_gen3`, `test_gengar_has_cursed_body_in_gen9`, `test_null_ability_slot_removed`, `test_multiple_past_entries_earliest_wins`, `test_past_abilities_field_exists`, `test_fr3_frlg_ability_override_applied`, `test_gengar_shows_levitate_gen3`, `test_gengar_shows_cursed_body_gen9`                                                                                                                                                     | Unit, Integration, E2E |
 | **Issue #2** Gen2 Sprites   | `test_sprite_frlg_first`, `test_sprite_fallback_ruby_sapphire`, `test_sprite_fallback_official_artwork`, `test_gen2_pokemon_has_gen3_sprite`, `test_gen2_pokemon_pixel_sprite_gen3`                                                                                                                                                                                                                                                                                | Unit, Integration, E2E |
+| **Issue #9** Gen Filter     | `test_gen_dropdown_filters_after_gen5_pokemon`, `test_gen_dropdown_shows_all_for_gen1_pokemon`, `test_gen_auto_switches_to_pokemon_generation`, `test_gen_stays_when_selecting_earlier_pokemon`, `test_autocomplete_shows_gen5_pokemon_on_gen3`, `test_autocomplete_shows_gen9_pokemon`, `getGenerationForId (vitest)`, `generationIndex (vitest)`                                                                                                                 | Unit, E2E              |
 | **Issue #4** Gen Selector   | `test_gen3_types_no_fairy`, `test_gen6_introduces_fairy`, `test_pikachu_stats_gen3`, `test_steel_resists_ghost_dark_gen3`, `test_steel_not_resist_ghost_dark_gen6`, `test_past_types_field_exists`, `test_past_stats_field_exists`, `test_past_damage_relations_field_exists`, `test_gen_selector_visible`, `test_default_gen_is_gen3`, `test_clefairy_normal_gen3`, `test_clefairy_fairy_gen6`, `test_switching_gen_updates_pokemon_list`, `test_stats_displayed` | Unit, Integration, E2E |
 
 ---

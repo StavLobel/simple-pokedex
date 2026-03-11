@@ -74,6 +74,17 @@ export const GENERATION_LABELS: Record<GenerationName, string> = {
   "generation-ix": "Gen IX \u2014 Scarlet, Violet, Legends: Z-A",
 };
 
+export function getGenerationForId(id: number): GenerationName {
+  for (const gen of GENERATION_ORDER) {
+    if (id <= GENERATION_MAX_ID[gen]) return gen;
+  }
+  return GENERATION_ORDER[GENERATION_ORDER.length - 1];
+}
+
+export function generationIndex(gen: GenerationName): number {
+  return GENERATION_ORDER.indexOf(gen);
+}
+
 export const GENERATION_MAX_ID: Record<GenerationName, number> = {
   "generation-i": 151,
   "generation-ii": 251,

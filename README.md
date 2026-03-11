@@ -13,8 +13,11 @@ Built with [Next.js](https://nextjs.org), [Tailwind CSS](https://tailwindcss.com
 
 ## Features
 
-- **Instant autocomplete** — all FRLG Pokémon names are cached on load for sub-100ms filtering
-- **Official artwork** — high-resolution sprites from the PokéAPI official-artwork collection, with FireRed/LeafGreen GBA sprites when available
+- **Instant autocomplete** — all Pokémon names (Gen I–IX) are cached on load for sub-100ms filtering, regardless of the selected generation
+- **Generation selector** — switch between Gen I–IX to view generation-accurate sprites, types, abilities, stats, and damage relations
+- **Smart generation filtering** — selecting a Pokémon automatically adjusts the generation dropdown (e.g. picking a Gen V Pokémon hides Gen I–IV)
+- **Official artwork & retro sprites** — high-resolution sprites from the PokéAPI official-artwork collection, with generation-specific pixel sprites when available
+- **Base stats** — color-coded stat bars for HP, Atk, Def, Sp.Atk, Sp.Def, and Speed with generation-aware values
 - **Type effectiveness engine** — calculates weaknesses (x2, x4), resistances (x0.5, x0.25), and immunities (x0)
 - **Ability modals** — click any ability to see its English description in a popup
 
@@ -46,22 +49,26 @@ Open [http://localhost:3000](http://localhost:3000) in your browser.
 | `npm run lint`         | Run ESLint                    |
 | `npm run format`       | Format code with Prettier     |
 | `npm run format:check` | Check formatting (used in CI) |
+| `npx vitest run`       | Run TypeScript unit tests     |
 
 ## Testing
 
-Tests are written in Python using pytest:
+TypeScript unit tests use [Vitest](https://vitest.dev); Python tests use [pytest](https://docs.pytest.org):
 
 ```bash
-# Install test dependencies
+# TypeScript unit tests (constants, pokeapi helpers, type effectiveness)
+npx vitest run
+
+# Install Python test dependencies
 pip install -r requirements-test.txt
 
-# Run unit tests
+# Python unit tests
 pytest tests/unit/ -v
 
-# Run integration tests (hits live PokéAPI)
+# Integration tests (hits live PokéAPI)
 pytest tests/integration/ -v
 
-# Run E2E tests (requires dev server on localhost:3000)
+# E2E tests (requires dev server on localhost:3000)
 pytest tests/e2e/ -v
 ```
 
@@ -72,18 +79,20 @@ simple_pokedex/
 ├── app/                    # Next.js App Router (pages, layout, global styles)
 ├── components/             # React UI components
 │   ├── AbilityModal.tsx    #   Ability description popup
+│   ├── GenerationSelector.tsx # Generation dropdown (Gen I–IX)
 │   ├── PokemonCard.tsx     #   Main Pokémon display card
 │   ├── SearchBar.tsx       #   Autocomplete search input
 │   ├── TypeBadge.tsx       #   Type pill badge
 │   └── WeaknessGrid.tsx    #   Weakness/resistance/immunity grid
 ├── contexts/               # React Context providers
-│   └── PokemonContext.tsx  #   Pokémon list state
+│   ├── GenerationContext.tsx # Generation state management
+│   └── PokemonContext.tsx  #   Pokémon list state (master + filtered)
 ├── lib/                    # Data layer & business logic
-│   ├── constants.ts        #   Type names, colors, API base URL
+│   ├── constants.ts        #   Types, colors, generation maps, API URL
+│   ├── generation-resolver.ts # Generation-aware type/ability/stat/sprite resolution
 │   ├── pokeapi.ts          #   PokéAPI fetch functions & types
 │   ├── typeEffectiveness.ts#   Type multiplier calculations
-│   ├── frlg-pokemon.ts     #   FRLG Pokémon ID list
-│   └── frlg-type-overrides.ts # Gen III type corrections
+│   └── frlg-pokemon.ts     #   FRLG Pokémon ID list & URL helpers
 ├── tests/                  # Python test suite
 │   ├── unit/               #   Unit tests
 │   ├── integration/        #   API integration tests
@@ -106,16 +115,16 @@ Or connect the repo to Vercel for automatic deployments.
 
 ## Tech Stack
 
-| Layer     | Technology          |
-| --------- | ------------------- |
-| Framework | Next.js 16          |
-| UI        | React 19            |
-| Styling   | Tailwind CSS 4      |
-| Language  | TypeScript (strict) |
-| Data      | PokéAPI REST        |
-| Testing   | pytest + Playwright |
-| CI/CD     | GitHub Actions      |
-| Hosting   | Vercel              |
+| Layer     | Technology                   |
+| --------- | ---------------------------- |
+| Framework | Next.js 16                   |
+| UI        | React 19                     |
+| Styling   | Tailwind CSS 4               |
+| Language  | TypeScript (strict)          |
+| Data      | PokéAPI REST                 |
+| Testing   | Vitest + pytest + Playwright |
+| CI/CD     | GitHub Actions               |
+| Hosting   | Vercel                       |
 
 ## Versioning
 
