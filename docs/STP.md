@@ -66,7 +66,8 @@ tests/
     ├── test_error_handling.py
     ├── test_legal_pages.py
     ├── test_generation_selector.py
-    └── test_generation_filter.py
+    ├── test_generation_filter.py
+    └── test_sprite_sizing.py
 ```
 
 ### 2.3 Conventions
@@ -1095,6 +1096,20 @@ describe("generationIndex") {
 }
 ```
 
+### 6.11 Sprite Sizing
+
+**File:** `tests/e2e/test_sprite_sizing.py`
+**Traces to:** Issue #10
+
+Tests that Pokémon sprites fill the Pokéball container uniformly across all generations and maintain their natural aspect ratio.
+
+```python
+class TestSpriteSizing:
+    def test_sprite_fills_container_official_artwork(self, page): ...
+    def test_sprite_fills_container_gen_sprite(self, page): ...
+    def test_sprite_maintains_aspect_ratio(self, page): ...
+```
+
 ---
 
 ## 7. Non-Functional Test Cases
@@ -1148,6 +1163,7 @@ class TestSearchPerformance:
 | **Issue #1** FRLG Abilities | `test_gengar_has_levitate_in_gen3`, `test_gengar_has_cursed_body_in_gen9`, `test_null_ability_slot_removed`, `test_multiple_past_entries_earliest_wins`, `test_past_abilities_field_exists`, `test_fr3_frlg_ability_override_applied`, `test_gengar_shows_levitate_gen3`, `test_gengar_shows_cursed_body_gen9`                                                                                                                                                     | Unit, Integration, E2E |
 | **Issue #2** Gen2 Sprites   | `test_sprite_frlg_first`, `test_sprite_fallback_ruby_sapphire`, `test_sprite_fallback_official_artwork`, `test_gen2_pokemon_has_gen3_sprite`, `test_gen2_pokemon_pixel_sprite_gen3`                                                                                                                                                                                                                                                                                | Unit, Integration, E2E |
 | **Issue #9** Gen Filter     | `test_gen_dropdown_filters_after_gen5_pokemon`, `test_gen_dropdown_shows_all_for_gen1_pokemon`, `test_gen_auto_switches_to_pokemon_generation`, `test_gen_stays_when_selecting_earlier_pokemon`, `test_autocomplete_shows_gen5_pokemon_on_gen3`, `test_autocomplete_shows_gen9_pokemon`, `getGenerationForId (vitest)`, `generationIndex (vitest)`                                                                                                                 | Unit, E2E              |
+| **Issue #10** Sprite Sizing | `test_sprite_fills_container_official_artwork`, `test_sprite_fills_container_gen_sprite`, `test_sprite_maintains_aspect_ratio`                                                                                                                                                                                                                                                                                                                                     | E2E                    |
 | **Issue #4** Gen Selector   | `test_gen3_types_no_fairy`, `test_gen6_introduces_fairy`, `test_pikachu_stats_gen3`, `test_steel_resists_ghost_dark_gen3`, `test_steel_not_resist_ghost_dark_gen6`, `test_past_types_field_exists`, `test_past_stats_field_exists`, `test_past_damage_relations_field_exists`, `test_gen_selector_visible`, `test_default_gen_is_gen3`, `test_clefairy_normal_gen3`, `test_clefairy_fairy_gen6`, `test_switching_gen_updates_pokemon_list`, `test_stats_displayed` | Unit, Integration, E2E |
 
 ---

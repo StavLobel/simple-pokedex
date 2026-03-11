@@ -177,13 +177,11 @@ export default function PokemonCard({ pokemonName }: PokemonCardProps) {
               <Image
                 src={sprite.url}
                 alt={pokemon.name}
-                width={sprite.isPixelArt ? 96 : 400}
-                height={sprite.isPixelArt ? 96 : 400}
-                className={
-                  sprite.isPixelArt
-                    ? "relative z-10 h-auto w-48 image-rendering-pixelated drop-shadow-lg"
-                    : "relative z-10 h-auto w-full drop-shadow-lg"
-                }
+                width={400}
+                height={400}
+                className={`relative z-10 h-auto w-full drop-shadow-lg${
+                  sprite.isPixelArt ? " image-rendering-pixelated" : ""
+                }`}
                 unoptimized={sprite.isPixelArt}
                 priority
               />

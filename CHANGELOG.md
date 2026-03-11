@@ -5,6 +5,18 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [26.3.5] - 2026-03-11
+
+### Fixed
+
+- Sprites in later generations (Gen VI-IX) now fill the Pokéball container at full width instead of being fixed at 192px (Issue #10)
+- Unified sprite sizing: all sprites use `w-full h-auto` regardless of pixel art vs. official artwork
+
+### Added
+
+- E2E tests for sprite sizing consistency across generations (`tests/e2e/test_sprite_sizing.py`)
+- Updated STP with sprite sizing test section (§6.11) and traceability matrix entry
+
 ## [26.3.4] - 2026-03-11
 
 ### Changed
@@ -72,6 +84,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - GitHub issue and pull request templates
 - SRS and STP documentation in `docs/`
 
+[26.3.5]: https://github.com/StavLobel/simple-pokedex/releases/tag/v26.3.5
 [26.3.4]: https://github.com/StavLobel/simple-pokedex/releases/tag/v26.3.4
 [26.3.2]: https://github.com/StavLobel/simple-pokedex/releases/tag/v26.3.2
 [26.3.1]: https://github.com/StavLobel/simple-pokedex/releases/tag/v26.3.1
