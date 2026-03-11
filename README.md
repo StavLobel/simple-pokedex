@@ -117,6 +117,17 @@ Or connect the repo to Vercel for automatic deployments.
 | CI/CD     | GitHub Actions      |
 | Hosting   | Vercel              |
 
+## Versioning
+
+This project follows [Semantic Versioning](https://semver.org/):
+
+- **MAJOR** — breaking changes (e.g., removing FRLG-only mode)
+- **MINOR** — new features (e.g., generation selector, move pool)
+- **PATCH** — bug fixes (e.g., ability overrides, sprite fallbacks)
+
+All notable changes are documented in [CHANGELOG.md](CHANGELOG.md).
+Releases are published on the [GitHub Releases](https://github.com/StavLobel/simple-pokedex/releases) page.
+
 ## Contributing
 
 See [CONTRIBUTING.md](CONTRIBUTING.md) for guidelines.
