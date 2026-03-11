@@ -19,6 +19,7 @@ function makeTypeData(overrides: Partial<TypeData["damage_relations"]>): TypeDat
       no_damage_to: [],
       ...overrides,
     },
+    past_damage_relations: [],
   };
 }
 
