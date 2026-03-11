@@ -1,0 +1,138 @@
+name: Rollback
+
+on:
+  workflow_dispatch:
+    inputs:
+      target_version:
+        description: "Version tag to roll back to (e.g. v26.3.8)"
+        required: true
+        type: string
+
+permissions:
+  contents: write
+
+concurrency:
+  group: rollback
+  cancel-in-progress: false
+
+jobs:
+  validate:
+    name: Validate Target
+    runs-on: ubuntu-latest
+
+    outputs:
+      target_version: ${{ inputs.target_version }}
+      current_version: ${{ steps.current.outputs.version }}
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Verify target release exists
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          if ! gh release view "${{ inputs.target_version }}" > /dev/null 2>&1; then
+            echo "::error::Release '${{ inputs.target_version }}' not found"
+            exit 1
+          fi
+
+      - name: Identify current production release
+        id: current
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          version=$(gh release list --exclude-drafts --exclude-pre-releases --limit 1 --json tagName --jq '.[0].tagName')
+          if [ -z "$version" ]; then
+            echo "::error::No current production release found"
+            exit 1
+          fi
+          echo "version=$version" >> "$GITHUB_OUTPUT"
+
+      - name: Guard against no-op rollback
+        run: |
+          if [ "${{ inputs.target_version }}" = "${{ steps.current.outputs.version }}" ]; then
+            echo "::error::Target version ${{ inputs.target_version }} is already the current production release"
+            exit 1
+          fi
+
+  deploy:
+    name: Deploy to Vercel
+    needs: validate
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    environment:
+      name: production
+      url: ${{ steps.deploy-step.outputs.url }}
+    env:
+      VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
+      VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
+    outputs:
+      url: ${{ steps.deploy-step.outputs.url }}
+
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ needs.validate.outputs.target_version }}
+
+      - name: Install Vercel CLI
+        run: npm install -g vercel
+
+      - name: Pull Vercel project settings
+        run: vercel pull --yes --environment=production --token=${{ secrets.VERCEL_TOKEN }}
+
+      - name: Build
+        run: vercel build --prod --token=${{ secrets.VERCEL_TOKEN }}
+
+      - name: Deploy
+        id: deploy-step
+        run: |
+          url=$(vercel deploy --prebuilt --prod --token=${{ secrets.VERCEL_TOKEN }})
+          echo "url=$url" >> "$GITHUB_OUTPUT"
+
+  archive:
+    name: Archive Rolled-Back Release
+    needs: [validate, deploy]
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Mark current release as rolled back
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          current="${{ needs.validate.outputs.current_version }}"
+          target="${{ needs.validate.outputs.target_version }}"
+
+          existing_body=$(gh release view "$current" --json body --jq '.body')
+          printf '[ROLLED BACK] — rolled back to %s via rollback workflow\n\n%s' "$target" "$existing_body" > /tmp/rollback_notes.md
+          gh release edit "$current" --prerelease --notes-file /tmp/rollback_notes.md
+
+  e2e:
+    name: E2E Smoke Tests
+    needs: [validate, deploy]
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ needs.validate.outputs.target_version }}
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+          cache-dependency-path: requirements-test.txt
+
+      - name: Install test dependencies
+        run: pip install -r requirements-test.txt
+
+      - name: Install Playwright browsers
+        run: playwright install chromium --with-deps
+
+      - name: Run E2E tests
+        run: pytest tests/e2e/ -v --tb=short
+        env:
+          BASE_URL: https://simplepokedex.vercel.app
