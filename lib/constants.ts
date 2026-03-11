@@ -16,7 +16,6 @@ export const ALL_TYPES = [
   "dragon",
   "dark",
   "steel",
-  "fairy",
 ] as const;
 
 export type PokemonTypeName = (typeof ALL_TYPES)[number];
@@ -39,5 +38,4 @@ export const TYPE_COLORS: Record<PokemonTypeName, string> = {
   dragon: "#7038F8",
   dark: "#705848",
   steel: "#B8B8D0",
-  fairy: "#EE99AC",
 };

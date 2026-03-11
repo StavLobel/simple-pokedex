@@ -72,16 +72,17 @@ class TestFilteredResults:
 class TestEdgeCases:
     """Edge-case coverage for the multiplier engine."""
 
-    def test_fr6_all_18_types_present(self, type_chart):
-        """Result dict must contain an entry for every attacking type."""
-        all_types = [
+    def test_fr6_all_17_gen3_types_present(self, type_chart):
+        """Result dict must contain an entry for every Gen III attacking type."""
+        gen3_types = [
             "normal", "fire", "water", "electric", "grass", "ice",
             "fighting", "poison", "ground", "flying", "psychic",
-            "bug", "rock", "ghost", "dragon", "dark", "steel", "fairy",
+            "bug", "rock", "ghost", "dragon", "dark", "steel",
         ]
         result = calculate_effectiveness(["fire"], type_chart)
-        for t in all_types:
+        for t in gen3_types:
             assert t in result, f"Missing type: {t}"
+        assert "fairy" not in result
 
     def test_fr6_no_negative_multipliers(self, type_chart):
         result = calculate_effectiveness(["fire", "flying"], type_chart)
@@ -95,4 +96,4 @@ class TestEdgeCases:
 
     def test_fr6_single_type_list_length(self, type_chart):
         result = calculate_effectiveness(["electric"], type_chart)
-        assert len(result) == 18
+        assert len(result) == 17

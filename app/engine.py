@@ -1,14 +1,18 @@
-"""Type effectiveness calculation engine for PokéSearch.
+"""Gen III type effectiveness calculation engine for PokéSearch (FRLG edition).
 
-Computes defensive multipliers for all 18 types against a given Pokémon's
-type combination, following the standard formula:
+Computes defensive multipliers for all 17 types (no Fairy) against a given
+Pokémon's type combination, following the standard formula:
     final_multiplier = multiplier_vs_type_A × multiplier_vs_type_B
+
+The chart reflects Gen III rules:
+  - Fairy type does not exist
+  - Steel resists Dark and Ghost
 """
 
 ALL_TYPES = [
     "normal", "fire", "water", "electric", "grass", "ice",
     "fighting", "poison", "ground", "flying", "psychic",
-    "bug", "rock", "ghost", "dragon", "dark", "steel", "fairy",
+    "bug", "rock", "ghost", "dragon", "dark", "steel",
 ]
 
 FULL_TYPE_CHART: dict[str, dict[str, list[str]]] = {
@@ -19,7 +23,7 @@ FULL_TYPE_CHART: dict[str, dict[str, list[str]]] = {
     },
     "fire": {
         "double_damage_from": ["water", "ground", "rock"],
-        "half_damage_from": ["fire", "grass", "ice", "bug", "steel", "fairy"],
+        "half_damage_from": ["fire", "grass", "ice", "bug", "steel"],
         "no_damage_from": [],
     },
     "water": {
@@ -43,13 +47,13 @@ FULL_TYPE_CHART: dict[str, dict[str, list[str]]] = {
         "no_damage_from": [],
     },
     "fighting": {
-        "double_damage_from": ["flying", "psychic", "fairy"],
+        "double_damage_from": ["flying", "psychic"],
         "half_damage_from": ["bug", "rock", "dark"],
         "no_damage_from": [],
     },
     "poison": {
         "double_damage_from": ["ground", "psychic"],
-        "half_damage_from": ["grass", "fighting", "poison", "bug", "fairy"],
+        "half_damage_from": ["grass", "fighting", "poison", "bug"],
         "no_damage_from": [],
     },
     "ground": {
@@ -83,12 +87,12 @@ FULL_TYPE_CHART: dict[str, dict[str, list[str]]] = {
         "no_damage_from": ["normal", "fighting"],
     },
     "dragon": {
-        "double_damage_from": ["ice", "dragon", "fairy"],
+        "double_damage_from": ["ice", "dragon"],
         "half_damage_from": ["fire", "water", "electric", "grass"],
         "no_damage_from": [],
     },
     "dark": {
-        "double_damage_from": ["fighting", "bug", "fairy"],
+        "double_damage_from": ["fighting", "bug"],
         "half_damage_from": ["ghost", "dark"],
         "no_damage_from": ["psychic"],
     },
@@ -96,14 +100,9 @@ FULL_TYPE_CHART: dict[str, dict[str, list[str]]] = {
         "double_damage_from": ["fire", "fighting", "ground"],
         "half_damage_from": [
             "normal", "grass", "ice", "flying", "psychic",
-            "bug", "rock", "dragon", "steel", "fairy",
+            "bug", "rock", "ghost", "dragon", "dark", "steel",
         ],
         "no_damage_from": ["poison"],
-    },
-    "fairy": {
-        "double_damage_from": ["poison", "steel"],
-        "half_damage_from": ["fighting", "bug", "dark"],
-        "no_damage_from": ["dragon"],
     },
 }
 
@@ -135,7 +134,7 @@ def calculate_effectiveness(
                     Falls back to FULL_TYPE_CHART.
 
     Returns:
-        Dict mapping each of the 18 attacking types to its final multiplier.
+        Dict mapping each of the 17 Gen III attacking types to its final multiplier.
     """
     if type_chart is None:
         type_chart = FULL_TYPE_CHART

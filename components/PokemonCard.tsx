@@ -20,10 +20,13 @@ import {
   getImmunities,
   type TypeMultiplier,
 } from "@/lib/typeEffectiveness";
-import type { PokemonTypeName } from "@/lib/constants";
+import { ALL_TYPES, type PokemonTypeName } from "@/lib/constants";
+import { GEN3_TYPE_OVERRIDES } from "@/lib/frlg-type-overrides";
 import TypeBadge from "./TypeBadge";
 import WeaknessGrid from "./WeaknessGrid";
 import AbilityModal from "./AbilityModal";
+
+const BASE_URL = "https://pokeapi.co/api/v2";
 
 interface PokemonCardProps {
   pokemonName: string;
@@ -54,6 +57,15 @@ export default function PokemonCard({ pokemonName }: PokemonCardProps) {
       try {
         const pData = await fetchPokemonData(pokemonName);
         if (cancelled) return;
+
+        const gen3Types = GEN3_TYPE_OVERRIDES[pData.id];
+        if (gen3Types) {
+          pData.types = gen3Types.map((name, i) => ({
+            slot: i + 1,
+            type: { name, url: `${BASE_URL}/type/${name}` },
+          }));
+        }
+
         setPokemon(pData);
 
         const typePromises = pData.types.map((t) => fetchTypeData(t.type.url));
