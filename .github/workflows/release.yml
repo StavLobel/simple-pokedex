@@ -1,37 +1,40 @@
 name: Release & Deploy
 
 on:
-  push:
-    branches: [main]
+  workflow_dispatch:
 
 permissions:
   contents: write
-  pull-requests: write
 
 jobs:
-  release-please:
-    name: Create Release
-    runs-on: ubuntu-latest
-    outputs:
-      release_created: ${{ steps.release.outputs.release_created }}
-      tag_name: ${{ steps.release.outputs.tag_name }}
-
-    steps:
-      - uses: googleapis/release-please-action@v4
-        id: release
-        with:
-          release-type: node
-          token: ${{ secrets.GITHUB_TOKEN }}
-
   ci:
     name: CI Checks
-    needs: release-please
-    if: needs.release-please.outputs.release_created == 'true'
     uses: ./.github/workflows/ci.yml
+    permissions:
+      contents: read
+
+  tag:
+    name: Tag Release
+    needs: ci
+    runs-on: ubuntu-latest
+    outputs:
+      version: ${{ steps.version.outputs.version }}
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Get version from package.json
+        id: version
+        run: echo "version=v$(node -p "require('./package.json').version")" >> "$GITHUB_OUTPUT"
+
+      - name: Create GitHub Release
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: gh release create "${{ steps.version.outputs.version }}" --generate-notes --target ${{ github.sha }}
 
   deploy:
     name: Deploy to Vercel
-    needs: [release-please, ci]
+    needs: tag
     runs-on: ubuntu-latest
     timeout-minutes: 10
     environment:
