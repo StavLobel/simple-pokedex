@@ -128,7 +128,7 @@ export default function PokemonCard({ pokemonName }: PokemonCardProps) {
         {/* Left column — FRLG Sprite */}
         <div className="flex items-start justify-center">
           <div
-            className="flex aspect-square w-full max-w-sm items-center justify-center rounded-2xl"
+            className="flex aspect-square w-full max-w-sm items-center justify-center rounded-2xl bg-transparent"
             style={{
               backgroundImage: "url(/pokeball.svg)",
               backgroundSize: "70%",
