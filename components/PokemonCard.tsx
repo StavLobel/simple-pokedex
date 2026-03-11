@@ -8,6 +8,7 @@ import {
   fetchAbilityData,
   getEnglishFlavorText,
   formatDexNumber,
+  getFrlgSprite,
   type PokemonData,
   type TypeData,
   type AbilityData,
@@ -105,21 +106,28 @@ export default function PokemonCard({ pokemonName }: PokemonCardProps) {
     );
   }
 
-  const artworkUrl = pokemon.sprites.other["official-artwork"].front_default;
+  const frlgSprite = getFrlgSprite(pokemon);
+  const fallbackArtwork = pokemon.sprites.other["official-artwork"].front_default;
+  const spriteUrl = frlgSprite ?? fallbackArtwork;
 
   return (
     <>
       <div className="grid gap-8 md:grid-cols-2">
-        {/* Left column — Artwork */}
+        {/* Left column — FRLG Sprite */}
         <div className="flex items-start justify-center">
           <div className="w-full max-w-sm rounded-2xl bg-surface p-6">
-            {artworkUrl ? (
+            {spriteUrl ? (
               <Image
-                src={artworkUrl}
+                src={spriteUrl}
                 alt={pokemon.name}
-                width={400}
-                height={400}
-                className="h-auto w-full"
+                width={frlgSprite ? 96 : 400}
+                height={frlgSprite ? 96 : 400}
+                className={
+                  frlgSprite
+                    ? "mx-auto h-auto w-48 image-rendering-pixelated"
+                    : "h-auto w-full"
+                }
+                unoptimized={!!frlgSprite}
                 priority
               />
             ) : (

@@ -34,3 +34,7 @@ body {
   background: var(--color-background);
   color: var(--color-foreground);
 }
+
+.image-rendering-pixelated {
+  image-rendering: pixelated;
+}

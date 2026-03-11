@@ -13,8 +13,8 @@ function PokeSearchContent() {
       <header className="mb-10 text-center">
         <h1 className="text-4xl font-bold text-foreground">PokéSearch</h1>
         <p className="mt-2 text-muted">
-          Search for a Pokémon to view its artwork, types, abilities, and
-          weaknesses.
+          FireRed & LeafGreen edition — search Pokémon to view their GBA
+          sprites, types, abilities, and weaknesses.
         </p>
       </header>
 

@@ -7,9 +7,17 @@ export interface PokemonData {
   id: number;
   name: string;
   sprites: {
+    front_default: string | null;
     other: {
       "official-artwork": {
         front_default: string | null;
+      };
+    };
+    versions: {
+      "generation-iii": {
+        "firered-leafgreen": {
+          front_default: string | null;
+        };
       };
     };
   };
@@ -90,5 +98,12 @@ export function getEnglishFlavorText(ability: AbilityData): string {
 }
 
 export function formatDexNumber(id: number): string {
-  return `#${String(id).padStart(4, "0")}`;
+  return `#${String(id).padStart(3, "0")}`;
+}
+
+export function getFrlgSprite(pokemon: PokemonData): string | null {
+  return (
+    pokemon.sprites.versions?.["generation-iii"]?.["firered-leafgreen"]
+      ?.front_default ?? null
+  );
 }

@@ -24,8 +24,8 @@ export default function SearchBar({ onSelect }: SearchBarProps) {
       }
       const lower = q.toLowerCase();
       const results = allPokemon
-        .map((p, idx) => ({ name: p.name, id: idx + 1 }))
         .filter((p) => p.name.includes(lower))
+        .map((p) => ({ name: p.name, id: p.id }))
         .slice(0, 20);
       setFiltered(results);
     },
@@ -100,7 +100,7 @@ export default function SearchBar({ onSelect }: SearchBarProps) {
                 }`}
               >
                 <span className="font-mono text-xs text-muted">
-                  #{String(p.id).padStart(4, "0")}
+                  #{String(p.id).padStart(3, "0")}
                 </span>
                 <span>{p.name}</span>
               </button>
