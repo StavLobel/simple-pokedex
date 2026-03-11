@@ -2,6 +2,21 @@
   "name": "simple_pokedex",
   "version": "0.1.0",
   "private": true,
+  "description": "A web-based Pokédex app with autocomplete search, official artwork, type effectiveness, and ability descriptions. Powered by PokéAPI.",
+  "author": "Stav Lobel",
+  "license": "MIT",
+  "keywords": [
+    "pokedex",
+    "pokemon",
+    "nextjs",
+    "react",
+    "tailwindcss",
+    "pokeapi",
+    "typescript"
+  ],
+  "engines": {
+    "node": ">=20.0.0"
+  },
   "scripts": {
     "dev": "next dev",
     "build": "next build",
