@@ -61,7 +61,8 @@ tests/
     ├── test_pokemon_display.py
     ├── test_ability_modal.py
     ├── test_responsive_layout.py
-    └── test_error_handling.py
+    ├── test_error_handling.py
+    └── test_legal_pages.py
 ```
 
 ### 2.3 Conventions
@@ -867,6 +868,107 @@ class TestErrorStates:
         assert len(errors) == 0, f"Console errors: {errors}"
 ```
 
+### 6.6 Legal Pages
+
+**File:** `tests/e2e/test_legal_pages.py`
+**Traces to:** Issue #7
+
+```python
+import os
+
+import pytest
+
+BASE_URL = os.environ.get("BASE_URL", "http://localhost:3000")
+
+pytestmark = pytest.mark.e2e
+
+
+class TestFooterAttribution:
+    """Issue #7: Footer displays PokeAPI attribution and trademark disclaimer."""
+
+    def test_footer_contains_pokeapi_attribution(self, page):
+        page.goto(BASE_URL)
+        footer = page.locator("footer")
+        assert footer.is_visible()
+        assert "PokéAPI" in footer.inner_text() or "PokeAPI" in footer.inner_text()
+        link = footer.locator("a[href='https://pokeapi.co/']")
+        assert link.count() > 0
+
+    def test_footer_contains_trademark_disclaimer(self, page):
+        page.goto(BASE_URL)
+        footer = page.locator("footer")
+        text = footer.inner_text()
+        assert "Nintendo" in text
+        assert "Game Freak" in text
+        assert ("The Pokémon Company" in text) or ("The Pokemon Company" in text)
+        assert "unofficial" in text.lower()
+
+
+class TestTermsPage:
+    """Issue #7: Terms of Service page exists and contains required sections."""
+
+    def test_terms_page_accessible(self, page):
+        page.goto(BASE_URL)
+        footer = page.locator("footer")
+        terms_link = footer.locator("a[href='/terms']")
+        assert terms_link.is_visible()
+        terms_link.click()
+        page.wait_for_timeout(1000)
+        assert "/terms" in page.url
+        heading = page.locator("h1")
+        assert "Terms of Service" in heading.inner_text()
+
+    def test_terms_page_has_required_sections(self, page):
+        page.goto(f"{BASE_URL}/terms")
+        page.wait_for_timeout(1000)
+        content = page.locator("main").inner_text()
+        assert "Nature of the Service" in content or "service" in content.lower()
+        assert "Disclaimer" in content
+        assert "as is" in content.lower() or "as-is" in content.lower()
+        assert "Acceptable Use" in content
+        assert "Modifications" in content or "Discontinuation" in content
+
+
+class TestPrivacyPage:
+    """Issue #7: Privacy Policy page exists and contains required sections."""
+
+    def test_privacy_page_accessible(self, page):
+        page.goto(BASE_URL)
+        footer = page.locator("footer")
+        privacy_link = footer.locator("a[href='/privacy']")
+        assert privacy_link.is_visible()
+        privacy_link.click()
+        page.wait_for_timeout(1000)
+        assert "/privacy" in page.url
+        heading = page.locator("h1")
+        assert "Privacy Policy" in heading.inner_text()
+
+    def test_privacy_page_has_required_sections(self, page):
+        page.goto(f"{BASE_URL}/privacy")
+        page.wait_for_timeout(1000)
+        content = page.locator("main").inner_text()
+        assert "Data Collection" in content or "data" in content.lower()
+        assert "Third-Party" in content or "third-party" in content.lower()
+        assert "PokéAPI" in content or "PokeAPI" in content
+        assert "Vercel" in content
+        assert "Contact" in content
+
+
+class TestFooterLinksOnAllPages:
+    """Issue #7: Footer legal links are visible on every page."""
+
+    def test_footer_links_present_on_all_pages(self, page):
+        for path in ["/", "/terms", "/privacy"]:
+            page.goto(f"{BASE_URL}{path}")
+            page.wait_for_timeout(500)
+            footer = page.locator("footer")
+            assert footer.is_visible(), f"Footer not visible on {path}"
+            terms_link = footer.locator("a[href='/terms']")
+            privacy_link = footer.locator("a[href='/privacy']")
+            assert terms_link.count() > 0, f"Terms link missing on {path}"
+            assert privacy_link.count() > 0, f"Privacy link missing on {path}"
+```
+
 ---
 
 ## 7. Non-Functional Test Cases
@@ -900,22 +1002,23 @@ class TestSearchPerformance:
 
 ## 8. Traceability Matrix
 
-| SRS Requirement           | Test ID(s)                                                                                                                                                                  | Level             |
-| ------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ----------------- |
-| **FR-1** Global Cache     | `test_fr1_pokemon_list_fetched`, `test_fr1_each_entry_has_name_and_url`, `test_fr1_search_bar_visible`                                                                      | Integration, E2E  |
-| **FR-2** Search Logic     | `test_fr2_filter_by_prefix`, `test_fr2_no_results_for_gibberish`, `test_fr2_case_insensitive`, `test_fr2_autocomplete_*`                                                    | Integration, E2E  |
-| **FR-3** Data Fetching    | `test_fr3_base_data_fields`, `test_fr3_type_damage_relations`, `test_fr3_ability_effect_entries`, `test_fr3_full_pipeline`                                                  | Integration       |
-| **FR-4** Official Artwork | `test_fr4_artwork_url_exists`, `test_fr4_image_rendered`, `test_fr4_image_not_broken`                                                                                       | Integration, E2E  |
-| **FR-5** ID Formatting    | `test_fr5_leading_zeros`, `test_fr5_zero_id_rejected`, `test_fr5_negative_id_rejected`, `test_fr5_leading_zeros_displayed`, `test_fr5_three_digit_id`                       | Unit, E2E         |
-| **FR-6** Multiplier Calc  | `test_fr6_super_effective`, `test_fr6_4x_weakness`, `test_fr6_immunity`, `test_fr6_cancel_out`, `test_fr6_*`                                                                | Unit, E2E         |
-| **FR-7** Filtered Results | `test_fr7_weaknesses_only`, `test_fr7_no_false_weaknesses`, `test_fr7_resistances_not_in_weakness_grid`                                                                     | Unit, E2E         |
-| **FR-8** Ability Popups   | `test_fr8_ability_clickable`, `test_fr8_modal_opens`, `test_fr8_modal_close_*`                                                                                              | E2E               |
-| **FR-9** Language Filter  | `test_fr9_english_extracted`, `test_fr9_non_english_excluded`, `test_fr9_missing_english_*`, `test_fr9_english_description_shown`                                           | Unit, E2E         |
-| **NFR** Performance       | `test_nfr_filter_under_100ms`                                                                                                                                               | Unit              |
-| **NFR** Accessibility     | `test_fr8_modal_close_esc_key`, `test_fr8_modal_close_x_button`                                                                                                             | E2E               |
-| **NFR** Availability      | `test_nfr_invalid_pokemon_shows_error`, `test_nfr_app_loads_without_crash`, `test_nfr_no_console_errors_on_load`                                                            | E2E               |
-| **§4.2** Layout           | `test_desktop_two_column_layout`, `test_mobile_single_column`                                                                                                               | E2E               |
-| **Issue #8** Versioning   | `test_package_json_has_version`, `test_version_follows_semver`, `test_changelog_exists`, `test_changelog_has_current_version_entry`, `test_git_tag_matches_package_version` | Unit, Integration |
+| SRS Requirement           | Test ID(s)                                                                                                                                                                                                                                                                          | Level             |
+| ------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ----------------- |
+| **FR-1** Global Cache     | `test_fr1_pokemon_list_fetched`, `test_fr1_each_entry_has_name_and_url`, `test_fr1_search_bar_visible`                                                                                                                                                                              | Integration, E2E  |
+| **FR-2** Search Logic     | `test_fr2_filter_by_prefix`, `test_fr2_no_results_for_gibberish`, `test_fr2_case_insensitive`, `test_fr2_autocomplete_*`                                                                                                                                                            | Integration, E2E  |
+| **FR-3** Data Fetching    | `test_fr3_base_data_fields`, `test_fr3_type_damage_relations`, `test_fr3_ability_effect_entries`, `test_fr3_full_pipeline`                                                                                                                                                          | Integration       |
+| **FR-4** Official Artwork | `test_fr4_artwork_url_exists`, `test_fr4_image_rendered`, `test_fr4_image_not_broken`                                                                                                                                                                                               | Integration, E2E  |
+| **FR-5** ID Formatting    | `test_fr5_leading_zeros`, `test_fr5_zero_id_rejected`, `test_fr5_negative_id_rejected`, `test_fr5_leading_zeros_displayed`, `test_fr5_three_digit_id`                                                                                                                               | Unit, E2E         |
+| **FR-6** Multiplier Calc  | `test_fr6_super_effective`, `test_fr6_4x_weakness`, `test_fr6_immunity`, `test_fr6_cancel_out`, `test_fr6_*`                                                                                                                                                                        | Unit, E2E         |
+| **FR-7** Filtered Results | `test_fr7_weaknesses_only`, `test_fr7_no_false_weaknesses`, `test_fr7_resistances_not_in_weakness_grid`                                                                                                                                                                             | Unit, E2E         |
+| **FR-8** Ability Popups   | `test_fr8_ability_clickable`, `test_fr8_modal_opens`, `test_fr8_modal_close_*`                                                                                                                                                                                                      | E2E               |
+| **FR-9** Language Filter  | `test_fr9_english_extracted`, `test_fr9_non_english_excluded`, `test_fr9_missing_english_*`, `test_fr9_english_description_shown`                                                                                                                                                   | Unit, E2E         |
+| **NFR** Performance       | `test_nfr_filter_under_100ms`                                                                                                                                                                                                                                                       | Unit              |
+| **NFR** Accessibility     | `test_fr8_modal_close_esc_key`, `test_fr8_modal_close_x_button`                                                                                                                                                                                                                     | E2E               |
+| **NFR** Availability      | `test_nfr_invalid_pokemon_shows_error`, `test_nfr_app_loads_without_crash`, `test_nfr_no_console_errors_on_load`                                                                                                                                                                    | E2E               |
+| **§4.2** Layout           | `test_desktop_two_column_layout`, `test_mobile_single_column`                                                                                                                                                                                                                       | E2E               |
+| **Issue #7** Legal Pages  | `test_footer_contains_pokeapi_attribution`, `test_footer_contains_trademark_disclaimer`, `test_terms_page_accessible`, `test_privacy_page_accessible`, `test_terms_page_has_required_sections`, `test_privacy_page_has_required_sections`, `test_footer_links_present_on_all_pages` | E2E               |
+| **Issue #8** Versioning   | `test_package_json_has_version`, `test_version_follows_semver`, `test_changelog_exists`, `test_changelog_has_current_version_entry`, `test_git_tag_matches_package_version`                                                                                                         | Unit, Integration |
 
 ---
 

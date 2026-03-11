@@ -1,0 +1,26 @@
+---
+description: Every new feature must include STP updates, test implementation, and CI integration
+alwaysApply: true
+---
+
+# Feature Testing Workflow
+
+When implementing a new feature (especially one tied to a GitHub issue), always complete these steps before considering the work done:
+
+## 1. Update `docs/STP.md`
+
+- Add a new subsection under the appropriate test level (e.g. §6.x for E2E) with the test file path, traceability reference (e.g. `Issue #N` or `FR-X`), and full test code block.
+- Add a row to the **Traceability Matrix** (§8) mapping the requirement/issue to the new test IDs and level.
+- Add the test file to the **Project Structure** tree (§2.2).
+
+## 2. Implement Tests
+
+- Follow existing patterns in `tests/`: class-based, `pytestmark = pytest.mark.<level>`, fixtures from `conftest.py`.
+- E2E tests use Playwright (`page` fixture), read `BASE_URL` from env, and live under `tests/e2e/`.
+- Unit and integration tests go under `tests/unit/` and `tests/integration/` respectively.
+
+## 3. CI Integration (`.github/workflows/ci.yml`)
+
+- Unit and integration tests are already run via `pytest tests/unit/` and `pytest tests/integration/` — new files in those directories are picked up automatically.
+- If a new test **level** or **dependency** is added (e.g. Playwright for E2E), add the required setup steps and a new job or step to the CI workflow.
+- Do **not** add a CI step if the new tests are already covered by existing glob-based pytest commands.
