@@ -1,3 +1,5 @@
+import os
+
 import pytest
 
 try:
@@ -6,7 +8,7 @@ try:
 except ImportError:
     HAS_PLAYWRIGHT = False
 
-BASE_URL = "http://localhost:3000"
+BASE_URL = os.environ.get("BASE_URL", "http://localhost:3000")
 
 
 # ── Mock Data ──────────────────────────────────────────────────────────────────

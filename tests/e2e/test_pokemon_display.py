@@ -1,6 +1,8 @@
+import os
+
 import pytest
 
-BASE_URL = "http://localhost:3000"
+BASE_URL = os.environ.get("BASE_URL", "http://localhost:3000")
 
 pytestmark = pytest.mark.e2e
 
