@@ -900,21 +900,21 @@ class TestSearchPerformance:
 
 ## 8. Traceability Matrix
 
-| SRS Requirement           | Test ID(s)                                                                                                                                            | Level            |
-| ------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------- | ---------------- |
-| **FR-1** Global Cache     | `test_fr1_pokemon_list_fetched`, `test_fr1_each_entry_has_name_and_url`, `test_fr1_search_bar_visible`                                                | Integration, E2E |
-| **FR-2** Search Logic     | `test_fr2_filter_by_prefix`, `test_fr2_no_results_for_gibberish`, `test_fr2_case_insensitive`, `test_fr2_autocomplete_*`                              | Integration, E2E |
-| **FR-3** Data Fetching    | `test_fr3_base_data_fields`, `test_fr3_type_damage_relations`, `test_fr3_ability_effect_entries`, `test_fr3_full_pipeline`                            | Integration      |
-| **FR-4** Official Artwork | `test_fr4_artwork_url_exists`, `test_fr4_image_rendered`, `test_fr4_image_not_broken`                                                                 | Integration, E2E |
-| **FR-5** ID Formatting    | `test_fr5_leading_zeros`, `test_fr5_zero_id_rejected`, `test_fr5_negative_id_rejected`, `test_fr5_leading_zeros_displayed`, `test_fr5_three_digit_id` | Unit, E2E        |
-| **FR-6** Multiplier Calc  | `test_fr6_super_effective`, `test_fr6_4x_weakness`, `test_fr6_immunity`, `test_fr6_cancel_out`, `test_fr6_*`                                          | Unit, E2E        |
-| **FR-7** Filtered Results | `test_fr7_weaknesses_only`, `test_fr7_no_false_weaknesses`, `test_fr7_resistances_not_in_weakness_grid`                                               | Unit, E2E        |
-| **FR-8** Ability Popups   | `test_fr8_ability_clickable`, `test_fr8_modal_opens`, `test_fr8_modal_close_*`                                                                        | E2E              |
-| **FR-9** Language Filter  | `test_fr9_english_extracted`, `test_fr9_non_english_excluded`, `test_fr9_missing_english_*`, `test_fr9_english_description_shown`                     | Unit, E2E        |
-| **NFR** Performance       | `test_nfr_filter_under_100ms`                                                                                                                         | Unit             |
-| **NFR** Accessibility     | `test_fr8_modal_close_esc_key`, `test_fr8_modal_close_x_button`                                                                                       | E2E              |
-| **NFR** Availability      | `test_nfr_invalid_pokemon_shows_error`, `test_nfr_app_loads_without_crash`, `test_nfr_no_console_errors_on_load`                                      | E2E              |
-| **§4.2** Layout           | `test_desktop_two_column_layout`, `test_mobile_single_column`                                                                                         | E2E              |
+| SRS Requirement           | Test ID(s)                                                                                                                                                                  | Level             |
+| ------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ----------------- |
+| **FR-1** Global Cache     | `test_fr1_pokemon_list_fetched`, `test_fr1_each_entry_has_name_and_url`, `test_fr1_search_bar_visible`                                                                      | Integration, E2E  |
+| **FR-2** Search Logic     | `test_fr2_filter_by_prefix`, `test_fr2_no_results_for_gibberish`, `test_fr2_case_insensitive`, `test_fr2_autocomplete_*`                                                    | Integration, E2E  |
+| **FR-3** Data Fetching    | `test_fr3_base_data_fields`, `test_fr3_type_damage_relations`, `test_fr3_ability_effect_entries`, `test_fr3_full_pipeline`                                                  | Integration       |
+| **FR-4** Official Artwork | `test_fr4_artwork_url_exists`, `test_fr4_image_rendered`, `test_fr4_image_not_broken`                                                                                       | Integration, E2E  |
+| **FR-5** ID Formatting    | `test_fr5_leading_zeros`, `test_fr5_zero_id_rejected`, `test_fr5_negative_id_rejected`, `test_fr5_leading_zeros_displayed`, `test_fr5_three_digit_id`                       | Unit, E2E         |
+| **FR-6** Multiplier Calc  | `test_fr6_super_effective`, `test_fr6_4x_weakness`, `test_fr6_immunity`, `test_fr6_cancel_out`, `test_fr6_*`                                                                | Unit, E2E         |
+| **FR-7** Filtered Results | `test_fr7_weaknesses_only`, `test_fr7_no_false_weaknesses`, `test_fr7_resistances_not_in_weakness_grid`                                                                     | Unit, E2E         |
+| **FR-8** Ability Popups   | `test_fr8_ability_clickable`, `test_fr8_modal_opens`, `test_fr8_modal_close_*`                                                                                              | E2E               |
+| **FR-9** Language Filter  | `test_fr9_english_extracted`, `test_fr9_non_english_excluded`, `test_fr9_missing_english_*`, `test_fr9_english_description_shown`                                           | Unit, E2E         |
+| **NFR** Performance       | `test_nfr_filter_under_100ms`                                                                                                                                               | Unit              |
+| **NFR** Accessibility     | `test_fr8_modal_close_esc_key`, `test_fr8_modal_close_x_button`                                                                                                             | E2E               |
+| **NFR** Availability      | `test_nfr_invalid_pokemon_shows_error`, `test_nfr_app_loads_without_crash`, `test_nfr_no_console_errors_on_load`                                                            | E2E               |
+| **§4.2** Layout           | `test_desktop_two_column_layout`, `test_mobile_single_column`                                                                                                               | E2E               |
 | **Issue #8** Versioning   | `test_package_json_has_version`, `test_version_follows_semver`, `test_changelog_exists`, `test_changelog_has_current_version_entry`, `test_git_tag_matches_package_version` | Unit, Integration |
 
 ---
