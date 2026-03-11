@@ -127,7 +127,16 @@ export default function PokemonCard({ pokemonName }: PokemonCardProps) {
       <div className="grid gap-8 md:grid-cols-2">
         {/* Left column — FRLG Sprite */}
         <div className="flex items-start justify-center">
-          <div className="w-full max-w-sm rounded-2xl bg-surface p-6">
+          <div
+            className="flex aspect-square w-full max-w-sm items-center justify-center rounded-2xl"
+            style={{
+              backgroundImage: "url(/pokeball.svg)",
+              backgroundSize: "70%",
+              backgroundPosition: "center",
+              backgroundRepeat: "no-repeat",
+              backgroundColor: "#F2F2F2",
+            }}
+          >
             {spriteUrl ? (
               <Image
                 src={spriteUrl}
@@ -136,14 +145,14 @@ export default function PokemonCard({ pokemonName }: PokemonCardProps) {
                 height={frlgSprite ? 96 : 400}
                 className={
                   frlgSprite
-                    ? "mx-auto h-auto w-48 image-rendering-pixelated"
-                    : "h-auto w-full"
+                    ? "relative z-10 h-auto w-48 image-rendering-pixelated drop-shadow-lg"
+                    : "relative z-10 h-auto w-full drop-shadow-lg"
                 }
                 unoptimized={!!frlgSprite}
                 priority
               />
             ) : (
-              <div className="flex aspect-square items-center justify-center text-muted">
+              <div className="flex items-center justify-center text-muted">
                 No image
               </div>
             )}
