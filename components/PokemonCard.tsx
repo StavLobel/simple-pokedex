@@ -134,7 +134,6 @@ export default function PokemonCard({ pokemonName }: PokemonCardProps) {
               backgroundSize: "70%",
               backgroundPosition: "center",
               backgroundRepeat: "no-repeat",
-              backgroundColor: "#F2F2F2",
             }}
           >
             {spriteUrl ? (
