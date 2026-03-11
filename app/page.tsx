@@ -1,7 +1,9 @@
 "use client";
 
 import { useState } from "react";
+import { GenerationProvider } from "@/contexts/GenerationContext";
 import { PokemonProvider } from "@/contexts/PokemonContext";
+import GenerationSelector from "@/components/GenerationSelector";
 import SearchBar from "@/components/SearchBar";
 import PokemonCard from "@/components/PokemonCard";
 
@@ -13,9 +15,10 @@ function PokeSearchContent() {
       <header className="mb-10 text-center">
         <h1 className="text-4xl font-bold text-foreground">PokéSearch</h1>
         <p className="mt-2 text-muted">
-          FireRed & LeafGreen edition — search Pokémon to view their GBA sprites, types, abilities,
-          and weaknesses.
+          Search Pokémon to view generation-accurate sprites, types, abilities, stats, and
+          weaknesses.
         </p>
+        <GenerationSelector />
       </header>
 
       <SearchBar onSelect={setSelectedPokemon} />
@@ -31,8 +34,10 @@ function PokeSearchContent() {
 
 export default function Home() {
   return (
-    <PokemonProvider>
-      <PokeSearchContent />
-    </PokemonProvider>
+    <GenerationProvider>
+      <PokemonProvider>
+        <PokeSearchContent />
+      </PokemonProvider>
+    </GenerationProvider>
   );
 }

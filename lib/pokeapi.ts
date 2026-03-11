@@ -13,13 +13,10 @@ export interface PokemonData {
         front_default: string | null;
       };
     };
-    versions: {
-      "generation-iii": {
-        "firered-leafgreen": {
-          front_default: string | null;
-        };
-      };
-    };
+    versions: Record<
+      string,
+      Record<string, { front_default: string | null } | undefined> | undefined
+    >;
   };
   types: {
     slot: number;
@@ -36,6 +33,31 @@ export interface PokemonData {
     is_hidden: boolean;
     slot: number;
   }[];
+  stats: {
+    base_stat: number;
+    effort: number;
+    stat: { name: string; url: string };
+  }[];
+  past_types: {
+    generation: { name: string; url: string };
+    types: { slot: number; type: { name: string; url: string } }[];
+  }[];
+  past_abilities: {
+    generation: { name: string; url: string };
+    abilities: {
+      ability: { name: string; url: string } | null;
+      is_hidden: boolean;
+      slot: number;
+    }[];
+  }[];
+  past_stats: {
+    generation: { name: string; url: string };
+    stats: {
+      base_stat: number;
+      effort: number;
+      stat: { name: string; url: string };
+    }[];
+  }[];
 }
 
 export interface TypeDamageRelations {
@@ -50,6 +72,10 @@ export interface TypeDamageRelations {
 export interface TypeData {
   name: string;
   damage_relations: TypeDamageRelations;
+  past_damage_relations: {
+    damage_relations: TypeDamageRelations;
+    generation: { name: string; url: string };
+  }[];
 }
 
 export interface AbilityFlavorEntry {
@@ -99,8 +125,4 @@ export function getEnglishFlavorText(ability: AbilityData): string {
 
 export function formatDexNumber(id: number): string {
   return `#${String(id).padStart(3, "0")}`;
-}
-
-export function getFrlgSprite(pokemon: PokemonData): string | null {
-  return pokemon.sprites.versions?.["generation-iii"]?.["firered-leafgreen"]?.front_default ?? null;
 }

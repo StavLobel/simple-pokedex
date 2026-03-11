@@ -1,8 +1,10 @@
 "use client";
 
-import { createContext, useContext, useEffect, useState, type ReactNode } from "react";
+import { createContext, useContext, useEffect, useMemo, useState, type ReactNode } from "react";
 import { fetchAllPokemon } from "@/lib/pokeapi";
-import { FRLG_POKEMON_IDS, extractIdFromUrl } from "@/lib/frlg-pokemon";
+import { extractIdFromUrl } from "@/lib/frlg-pokemon";
+import { useGeneration } from "@/contexts/GenerationContext";
+import { GENERATION_MAX_ID } from "@/lib/constants";
 
 export interface PokemonEntry {
   name: string;
@@ -23,22 +25,27 @@ const PokemonContext = createContext<PokemonContextValue>({
 });
 
 export function PokemonProvider({ children }: { children: ReactNode }) {
-  const [allPokemon, setAllPokemon] = useState<PokemonEntry[]>([]);
+  const [masterList, setMasterList] = useState<PokemonEntry[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const { generation } = useGeneration();
 
   useEffect(() => {
     fetchAllPokemon()
       .then((list) => {
-        const frlgPokemon = list
+        const withIds = list
           .map((p) => ({ ...p, id: extractIdFromUrl(p.url) }))
-          .filter((p) => FRLG_POKEMON_IDS.has(p.id))
           .sort((a, b) => a.id - b.id);
-        setAllPokemon(frlgPokemon);
+        setMasterList(withIds);
       })
       .catch((err) => setError(err.message))
       .finally(() => setLoading(false));
   }, []);
+
+  const allPokemon = useMemo(() => {
+    const maxId = GENERATION_MAX_ID[generation];
+    return masterList.filter((p) => p.id <= maxId);
+  }, [masterList, generation]);
 
   return (
     <PokemonContext.Provider value={{ allPokemon, loading, error }}>

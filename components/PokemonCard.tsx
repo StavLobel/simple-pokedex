@@ -8,7 +8,6 @@ import {
   fetchAbilityData,
   getEnglishFlavorText,
   formatDexNumber,
-  getFrlgSprite,
   type PokemonData,
   type TypeData,
   type AbilityData,
@@ -20,8 +19,15 @@ import {
   getImmunities,
   type TypeMultiplier,
 } from "@/lib/typeEffectiveness";
-import { POKEAPI_BASE_URL, type PokemonTypeName } from "@/lib/constants";
-import { GEN3_TYPE_OVERRIDES } from "@/lib/frlg-type-overrides";
+import { TYPES_BY_GENERATION, type PokemonTypeName } from "@/lib/constants";
+import {
+  resolveTypesForGeneration,
+  resolveAbilitiesForGeneration,
+  resolveStatsForGeneration,
+  resolveDamageRelationsForGeneration,
+  getSpriteForGeneration,
+} from "@/lib/generation-resolver";
+import { useGeneration } from "@/contexts/GenerationContext";
 import TypeBadge from "./TypeBadge";
 import WeaknessGrid from "./WeaknessGrid";
 import AbilityModal from "./AbilityModal";
@@ -36,8 +42,30 @@ interface AbilityInfo {
   description: string;
 }
 
+const STAT_LABELS: Record<string, string> = {
+  hp: "HP",
+  attack: "Atk",
+  defense: "Def",
+  "special-attack": "Sp.Atk",
+  "special-defense": "Sp.Def",
+  speed: "Speed",
+  special: "Special",
+};
+
+const STAT_COLORS: Record<string, string> = {
+  hp: "bg-red-500",
+  attack: "bg-orange-500",
+  defense: "bg-yellow-500",
+  "special-attack": "bg-blue-500",
+  "special-defense": "bg-green-500",
+  speed: "bg-pink-500",
+  special: "bg-purple-500",
+};
+
 export default function PokemonCard({ pokemonName }: PokemonCardProps) {
+  const { generation } = useGeneration();
   const [pokemon, setPokemon] = useState<PokemonData | null>(null);
+  const [resolvedStats, setResolvedStats] = useState<PokemonData["stats"]>([]);
   const [weaknesses, setWeaknesses] = useState<TypeMultiplier[]>([]);
   const [resistances, setResistances] = useState<TypeMultiplier[]>([]);
   const [immunities, setImmunities] = useState<TypeMultiplier[]>([]);
@@ -56,21 +84,34 @@ export default function PokemonCard({ pokemonName }: PokemonCardProps) {
         const pData = await fetchPokemonData(pokemonName);
         if (cancelled) return;
 
-        const gen3Types = GEN3_TYPE_OVERRIDES[pData.id];
-        if (gen3Types) {
-          pData.types = gen3Types.map((name, i) => ({
-            slot: i + 1,
-            type: { name, url: `${POKEAPI_BASE_URL}/type/${name}` },
-          }));
-        }
+        pData.types = resolveTypesForGeneration(pData.types, pData.past_types, generation);
+        pData.abilities = resolveAbilitiesForGeneration(
+          pData.abilities,
+          pData.past_abilities,
+          generation,
+        );
+        const stats = resolveStatsForGeneration(pData.stats, pData.past_stats, generation);
 
         setPokemon(pData);
+        setResolvedStats(stats);
 
         const typePromises = pData.types.map((t) => fetchTypeData(t.type.url));
         const typesData: TypeData[] = await Promise.all(typePromises);
         if (cancelled) return;
 
-        const effectiveness = calculateEffectiveness(typesData);
+        const resolvedTypesData = typesData.map((td) => ({
+          ...td,
+          damage_relations: resolveDamageRelationsForGeneration(
+            td.damage_relations,
+            td.past_damage_relations,
+            generation,
+          ),
+        }));
+
+        const availableTypes = new Set(TYPES_BY_GENERATION[generation]);
+        const effectiveness = calculateEffectiveness(resolvedTypesData).filter((e) =>
+          availableTypes.has(e.type),
+        );
         setWeaknesses(getWeaknesses(effectiveness));
         setResistances(getResistances(effectiveness));
         setImmunities(getImmunities(effectiveness));
@@ -97,7 +138,7 @@ export default function PokemonCard({ pokemonName }: PokemonCardProps) {
     return () => {
       cancelled = true;
     };
-  }, [pokemonName]);
+  }, [pokemonName, generation]);
 
   if (loading) {
     return (
@@ -116,14 +157,12 @@ export default function PokemonCard({ pokemonName }: PokemonCardProps) {
     );
   }
 
-  const frlgSprite = getFrlgSprite(pokemon);
-  const fallbackArtwork = pokemon.sprites.other["official-artwork"].front_default;
-  const spriteUrl = frlgSprite ?? fallbackArtwork;
+  const sprite = getSpriteForGeneration(pokemon.sprites, generation);
 
   return (
     <>
       <div className="grid gap-8 md:grid-cols-2">
-        {/* Left column — FRLG Sprite */}
+        {/* Left column — Sprite */}
         <div className="flex items-start justify-center">
           <div
             className="flex aspect-square w-full max-w-sm items-center justify-center rounded-2xl bg-transparent"
@@ -134,18 +173,18 @@ export default function PokemonCard({ pokemonName }: PokemonCardProps) {
               backgroundRepeat: "no-repeat",
             }}
           >
-            {spriteUrl ? (
+            {sprite.url ? (
               <Image
-                src={spriteUrl}
+                src={sprite.url}
                 alt={pokemon.name}
-                width={frlgSprite ? 96 : 400}
-                height={frlgSprite ? 96 : 400}
+                width={sprite.isPixelArt ? 96 : 400}
+                height={sprite.isPixelArt ? 96 : 400}
                 className={
-                  frlgSprite
+                  sprite.isPixelArt
                     ? "relative z-10 h-auto w-48 image-rendering-pixelated drop-shadow-lg"
                     : "relative z-10 h-auto w-full drop-shadow-lg"
                 }
-                unoptimized={!!frlgSprite}
+                unoptimized={sprite.isPixelArt}
                 priority
               />
             ) : (
@@ -154,7 +193,7 @@ export default function PokemonCard({ pokemonName }: PokemonCardProps) {
           </div>
         </div>
 
-        {/* Right column — Stats */}
+        {/* Right column — Details */}
         <div className="space-y-6">
           <div>
             <p className="font-mono text-sm text-muted">{formatDexNumber(pokemon.id)}</p>
@@ -189,6 +228,34 @@ export default function PokemonCard({ pokemonName }: PokemonCardProps) {
                   )}
                 </button>
               ))}
+            </div>
+          </div>
+
+          {/* Base Stats */}
+          <div>
+            <h3 className="mb-2 text-sm font-semibold uppercase tracking-wider text-muted">
+              Base Stats
+            </h3>
+            <div className="space-y-2" data-testid="stats-section">
+              {resolvedStats.map((s) => {
+                const label = STAT_LABELS[s.stat.name] ?? s.stat.name;
+                const color = STAT_COLORS[s.stat.name] ?? "bg-gray-500";
+                const pct = Math.min((s.base_stat / 255) * 100, 100);
+                return (
+                  <div key={s.stat.name} className="flex items-center gap-3">
+                    <span className="w-14 text-right text-xs font-medium text-muted">{label}</span>
+                    <span className="w-8 text-right font-mono text-sm text-foreground">
+                      {s.base_stat}
+                    </span>
+                    <div className="h-2.5 flex-1 overflow-hidden rounded-full bg-white/10">
+                      <div
+                        className={`h-full rounded-full ${color}`}
+                        style={{ width: `${pct}%` }}
+                      />
+                    </div>
+                  </div>
+                );
+              })}
             </div>
           </div>
 

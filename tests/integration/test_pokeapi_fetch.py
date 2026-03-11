@@ -65,3 +65,60 @@ class TestOfficialArtwork:
         assert artwork is not None
         assert artwork.startswith("https://")
         assert artwork.endswith(".png")
+
+
+class TestPastDataFields:
+    """Issue #1, #2, #4: Verify PokéAPI provides past_* fields for generation resolution."""
+
+    def test_past_types_field_exists(self):
+        resp = httpx.get(f"{POKEAPI_BASE}/pokemon/35")
+        data = resp.json()
+        past_types = data["past_types"]
+        assert len(past_types) > 0
+        gens = [e["generation"]["name"] for e in past_types]
+        assert "generation-v" in gens
+
+    def test_past_abilities_field_exists(self):
+        resp = httpx.get(f"{POKEAPI_BASE}/pokemon/94")
+        data = resp.json()
+        past_abilities = data["past_abilities"]
+        assert len(past_abilities) > 0
+        gens = [e["generation"]["name"] for e in past_abilities]
+        assert "generation-vi" in gens
+
+    def test_past_stats_field_exists(self):
+        resp = httpx.get(f"{POKEAPI_BASE}/pokemon/25")
+        data = resp.json()
+        past_stats = data["past_stats"]
+        assert len(past_stats) > 0
+        gens = [e["generation"]["name"] for e in past_stats]
+        assert "generation-v" in gens
+
+    def test_past_damage_relations_field_exists(self):
+        resp = httpx.get(f"{POKEAPI_BASE}/type/steel")
+        data = resp.json()
+        past_dr = data["past_damage_relations"]
+        assert len(past_dr) > 0
+        gens = [e["generation"]["name"] for e in past_dr]
+        assert "generation-v" in gens
+
+    def test_gen2_pokemon_has_gen3_sprite(self):
+        resp = httpx.get(f"{POKEAPI_BASE}/pokemon/155")
+        data = resp.json()
+        rs_sprite = data["sprites"]["versions"]["generation-iii"]["ruby-sapphire"]["front_default"]
+        assert rs_sprite is not None
+        assert rs_sprite.startswith("https://")
+
+    def test_fr3_frlg_ability_override_applied(self):
+        resp = httpx.get(f"{POKEAPI_BASE}/pokemon/94")
+        data = resp.json()
+        past_abilities = data["past_abilities"]
+        gen6_entry = next(
+            e for e in past_abilities if e["generation"]["name"] == "generation-vi"
+        )
+        ability_names = [
+            a["ability"]["name"]
+            for a in gen6_entry["abilities"]
+            if a["ability"] is not None
+        ]
+        assert "levitate" in ability_names
