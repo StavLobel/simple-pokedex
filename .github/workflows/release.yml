@@ -89,4 +89,4 @@ jobs:
       - name: Run E2E tests
         run: pytest tests/e2e/ -v --tb=short
         env:
-          BASE_URL: ${{ needs.deploy.outputs.url }}
+          BASE_URL: https://simplepokedex.vercel.app
