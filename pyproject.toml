@@ -1,0 +1,22 @@
+[project]
+name = "pokesearch-tests"
+version = "0.1.0"
+description = "Test suite for the PokéSearch application"
+requires-python = ">=3.11"
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+markers = [
+    "unit: Pure logic tests — no network, no browser",
+    "integration: Tests that hit the live PokéAPI",
+    "e2e: Browser-based end-to-end tests (requires localhost:3000)",
+]
+addopts = "-v --strict-markers"
+
+[tool.coverage.run]
+source = ["app"]
+omit = ["tests/*"]
+
+[tool.coverage.report]
+show_missing = true
+fail_under = 80
