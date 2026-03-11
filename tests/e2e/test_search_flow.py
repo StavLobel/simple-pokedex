@@ -43,4 +43,4 @@ class TestSearchAutocomplete:
             "[data-testid='suggestion'], .autocomplete-item, li"
         ).first.click()
         page.wait_for_timeout(1000)
-        assert page.locator("text=bulbasaur", exact=False).is_visible()
+        assert page.locator("text=bulbasaur").is_visible()

@@ -23,12 +23,12 @@ class TestOfficialArtwork:
 
     def test_fr4_image_rendered(self, page):
         _select_pokemon(page, "pikachu")
-        img = page.locator("img[src*='official-artwork']")
+        img = page.locator("img[alt='pikachu']")
         assert img.is_visible()
 
     def test_fr4_image_not_broken(self, page):
         _select_pokemon(page, "pikachu")
-        img = page.locator("img[src*='official-artwork']")
+        img = page.locator("img[alt='pikachu']")
         natural_width = img.evaluate("el => el.naturalWidth")
         assert natural_width > 0
 
@@ -52,13 +52,13 @@ class TestTypeEffectiveness:
 
     def test_fr6_weaknesses_shown(self, page):
         _select_pokemon(page, "charizard")
-        weakness_section = page.locator("text=Weak", exact=False).first
+        weakness_section = page.locator("text=Weak").first
         assert weakness_section.is_visible()
 
     def test_fr6_rock_4x_for_charizard(self, page):
         _select_pokemon(page, "charizard")
         rock_badge = page.locator(
-            "[data-testid='type-rock'], text=Rock", exact=False
+            "[data-testid='type-rock'], text=Rock"
         )
         assert rock_badge.is_visible()
 

@@ -44,14 +44,14 @@ class TestAbilityResolutionE2E:
 
     def test_gengar_shows_levitate_gen3(self, page):
         _select_pokemon(page, "gengar")
-        abilities_text = page.locator("text=levitate", exact=False)
+        abilities_text = page.locator("text=levitate")
         assert abilities_text.is_visible()
 
     def test_gengar_shows_cursed_body_gen9(self, page):
         page.goto(BASE_URL)
         _set_generation(page, "generation-ix")
         _select_pokemon(page, "gengar")
-        abilities_text = page.locator("text=cursed body", exact=False)
+        abilities_text = page.locator("text=cursed body")
         assert abilities_text.is_visible()
 
 
@@ -60,14 +60,14 @@ class TestTypeResolutionE2E:
 
     def test_clefairy_normal_gen3(self, page):
         _select_pokemon(page, "clefairy")
-        normal_badge = page.locator("text=Normal", exact=False).first
+        normal_badge = page.locator("text=Normal").first
         assert normal_badge.is_visible()
 
     def test_clefairy_fairy_gen6(self, page):
         page.goto(BASE_URL)
         _set_generation(page, "generation-vi")
         _select_pokemon(page, "clefairy")
-        fairy_badge = page.locator("text=Fairy", exact=False).first
+        fairy_badge = page.locator("text=Fairy").first
         assert fairy_badge.is_visible()
 
 

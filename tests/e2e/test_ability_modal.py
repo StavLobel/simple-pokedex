@@ -23,14 +23,14 @@ class TestAbilityModal:
 
     def test_fr8_ability_clickable(self, page):
         _select_pokemon(page, "charizard")
-        ability = page.locator("text=blaze", exact=False).first
+        ability = page.locator("text=blaze").first
         assert ability.is_visible()
         ability.click()
         page.wait_for_timeout(500)
 
     def test_fr8_modal_opens(self, page):
         _select_pokemon(page, "charizard")
-        page.locator("text=blaze", exact=False).first.click()
+        page.locator("text=blaze").first.click()
         page.wait_for_timeout(500)
         modal = page.locator(
             "[role='dialog'], .modal, [data-testid='ability-modal']"
@@ -39,7 +39,7 @@ class TestAbilityModal:
 
     def test_fr9_english_description_shown(self, page):
         _select_pokemon(page, "charizard")
-        page.locator("text=blaze", exact=False).first.click()
+        page.locator("text=blaze").first.click()
         page.wait_for_timeout(800)
         modal = page.locator(
             "[role='dialog'], .modal, [data-testid='ability-modal']"
@@ -49,7 +49,7 @@ class TestAbilityModal:
 
     def test_fr8_modal_close_x_button(self, page):
         _select_pokemon(page, "charizard")
-        page.locator("text=blaze", exact=False).first.click()
+        page.locator("text=blaze").first.click()
         page.wait_for_timeout(500)
         close_btn = page.locator(
             "[aria-label='Close'], button:has-text('×'), button:has-text('X')"
@@ -64,7 +64,7 @@ class TestAbilityModal:
     def test_fr8_modal_close_esc_key(self, page):
         """NFR Accessibility: Modal closable via Esc key."""
         _select_pokemon(page, "charizard")
-        page.locator("text=blaze", exact=False).first.click()
+        page.locator("text=blaze").first.click()
         page.wait_for_timeout(500)
         page.keyboard.press("Escape")
         page.wait_for_timeout(300)

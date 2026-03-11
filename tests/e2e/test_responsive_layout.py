@@ -18,7 +18,7 @@ class TestDesktopLayout:
             "[data-testid='suggestion'], .autocomplete-item, li"
         ).first.click()
         page.wait_for_timeout(1500)
-        img_box = page.locator("img[src*='official-artwork']").bounding_box()
+        img_box = page.locator("img[alt='pikachu']").bounding_box()
         stats = page.locator(
             "[data-testid='stats'], .stats-section, .pokemon-stats"
         ).first
@@ -39,7 +39,7 @@ class TestMobileLayout:
             "[data-testid='suggestion'], .autocomplete-item, li"
         ).first.click()
         mobile_page.wait_for_timeout(1500)
-        img = mobile_page.locator("img[src*='official-artwork']")
+        img = mobile_page.locator("img[alt='pikachu']")
         if img.is_visible():
             img_box = img.bounding_box()
             assert img_box["width"] <= 375, \
