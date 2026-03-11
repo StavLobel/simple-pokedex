@@ -63,7 +63,9 @@ export interface AbilityData {
   flavor_text_entries: AbilityFlavorEntry[];
 }
 
-const BASE_URL = "https://pokeapi.co/api/v2";
+import { POKEAPI_BASE_URL } from "./constants";
+
+const BASE_URL = POKEAPI_BASE_URL;
 
 export async function fetchAllPokemon(): Promise<PokemonListEntry[]> {
   const res = await fetch(`${BASE_URL}/pokemon?limit=1302`);

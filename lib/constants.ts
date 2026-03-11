@@ -1,3 +1,5 @@
+export const POKEAPI_BASE_URL = "https://pokeapi.co/api/v2";
+
 export const ALL_TYPES = [
   "normal",
   "fire",
