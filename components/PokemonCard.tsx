@@ -130,8 +130,8 @@ export default function PokemonCard({ pokemonName }: PokemonCardProps) {
           <div
             className="flex aspect-square w-full max-w-sm items-center justify-center rounded-2xl bg-transparent"
             style={{
-              backgroundImage: "url(/pokeball.png)",
-              backgroundSize: "70%",
+              backgroundImage: "url(/pokeball.svg)",
+              backgroundSize: "85%",
               backgroundPosition: "center",
               backgroundRepeat: "no-repeat",
             }}
