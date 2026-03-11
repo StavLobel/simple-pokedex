@@ -1,4 +1,4 @@
-"""Utility functions for PokéSearch — formatting, parsing, filtering."""
+"""Utility functions for Simple Pokédex — formatting, parsing, filtering."""
 
 _FALLBACK_DESCRIPTION = "No description available."
 

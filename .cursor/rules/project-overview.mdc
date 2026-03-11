@@ -1,11 +1,11 @@
 ---
-description: High-level project context for PokéSearch
+description: High-level project context for Simple Pokédex
 alwaysApply: true
 ---
 
-# PokéSearch — Project Overview
+# Simple Pokédex — Project Overview
 
-PokéSearch is a web-based Pokédex focused on FireRed/LeafGreen (FRLG) Pokémon. It fetches data from the PokéAPI REST API.
+Simple Pokédex is a web-based Pokédex focused on FireRed/LeafGreen (FRLG) Pokémon. It fetches data from the PokéAPI REST API.
 
 ## Tech Stack
 

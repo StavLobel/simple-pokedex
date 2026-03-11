@@ -143,7 +143,7 @@ export default function PokemonCard({ pokemonName }: PokemonCardProps) {
   if (loading) {
     return (
       <div className="flex justify-center py-16">
-        <div className="h-10 w-10 animate-spin rounded-full border-4 border-white/20 border-t-white/80" />
+        <div className="h-10 w-10 animate-spin rounded-full border-4 border-foreground/20 border-t-foreground/80" />
       </div>
     );
   }
@@ -220,7 +220,7 @@ export default function PokemonCard({ pokemonName }: PokemonCardProps) {
                 <button
                   key={a.name}
                   onClick={() => setModalAbility(a)}
-                  className="rounded-lg border border-white/15 px-3 py-1.5 text-sm capitalize text-foreground transition hover:bg-white/10"
+                  className="rounded-lg border border-foreground/15 px-3 py-1.5 text-sm capitalize text-foreground transition hover:bg-foreground/10"
                 >
                   {a.name.replace("-", " ")}
                   {a.isHidden && (
@@ -247,7 +247,7 @@ export default function PokemonCard({ pokemonName }: PokemonCardProps) {
                     <span className="w-8 text-right font-mono text-sm text-foreground">
                       {s.base_stat}
                     </span>
-                    <div className="h-2.5 flex-1 overflow-hidden rounded-full bg-white/10">
+                    <div className="h-2.5 flex-1 overflow-hidden rounded-full bg-foreground/10">
                       <div
                         className={`h-full rounded-full ${color}`}
                         style={{ width: `${pct}%` }}

@@ -1,4 +1,4 @@
-"""Gen III type effectiveness calculation engine for PokéSearch (FRLG edition).
+"""Gen III type effectiveness calculation engine for Simple Pokédex (FRLG edition).
 
 Computes defensive multipliers for all 17 types (no Fairy) against a given
 Pokémon's type combination, following the standard formula:

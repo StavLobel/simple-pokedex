@@ -1,4 +1,4 @@
-# Contributing to PokéSearch
+# Contributing to Simple Pokédex
 
 Thanks for your interest in contributing! Here's how to get started.
 

@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 
 export const metadata: Metadata = {
-  title: "Privacy Policy — PokéSearch",
+  title: "Privacy Policy — Simple Pokédex",
 };
 
 export default function PrivacyPage() {
@@ -12,7 +12,7 @@ export default function PrivacyPage() {
         href="/"
         className="mb-8 inline-block text-sm text-muted underline hover:text-foreground"
       >
-        &larr; Back to PokéSearch
+        &larr; Back to Simple Pokédex
       </Link>
 
       <h1 className="mb-6 text-3xl font-bold text-foreground">Privacy Policy</h1>
@@ -20,8 +20,8 @@ export default function PrivacyPage() {
       <section className="space-y-4 text-sm leading-relaxed text-muted">
         <h2 className="text-lg font-semibold text-foreground">Data Collection</h2>
         <p>
-          PokéSearch does not collect, store, or process any personal data. No accounts, cookies, or
-          tracking mechanisms are used by this application.
+          Simple Pokédex does not collect, store, or process any personal data. No accounts,
+          cookies, or tracking mechanisms are used by this application.
         </p>
 
         <h2 className="text-lg font-semibold text-foreground">Third-Party Services</h2>
@@ -66,7 +66,7 @@ export default function PrivacyPage() {
 
         <h2 className="text-lg font-semibold text-foreground">Analytics &amp; Cookies</h2>
         <p>
-          PokéSearch does not use analytics services or set cookies. Should this change in the
+          Simple Pokédex does not use analytics services or set cookies. Should this change in the
           future, this policy will be updated accordingly.
         </p>
 

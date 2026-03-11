@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 
 export const metadata: Metadata = {
-  title: "Terms of Service — PokéSearch",
+  title: "Terms of Service — Simple Pokédex",
 };
 
 export default function TermsPage() {
@@ -12,7 +12,7 @@ export default function TermsPage() {
         href="/"
         className="mb-8 inline-block text-sm text-muted underline hover:text-foreground"
       >
-        &larr; Back to PokéSearch
+        &larr; Back to Simple Pokédex
       </Link>
 
       <h1 className="mb-6 text-3xl font-bold text-foreground">Terms of Service</h1>
@@ -20,9 +20,9 @@ export default function TermsPage() {
       <section className="space-y-4 text-sm leading-relaxed text-muted">
         <h2 className="text-lg font-semibold text-foreground">Nature of the Service</h2>
         <p>
-          PokéSearch is a free, fan-made, educational project. It is not a commercial product. The
-          service is provided for personal, non-commercial use and is intended to help fans explore
-          Pokémon data in a convenient format.
+          Simple Pokédex is a free, fan-made, educational project. It is not a commercial product.
+          The service is provided for personal, non-commercial use and is intended to help fans
+          explore Pokémon data in a convenient format.
         </p>
 
         <h2 className="text-lg font-semibold text-foreground">Disclaimer</h2>

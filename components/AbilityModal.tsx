@@ -32,10 +32,10 @@ export default function AbilityModal({ abilityName, description, onClose }: Abil
       aria-modal="true"
       aria-label={`${abilityName} ability details`}
     >
-      <div className="relative w-full max-w-md rounded-xl bg-surface-dark p-6 shadow-2xl">
+      <div className="relative w-full max-w-md rounded-xl bg-white p-6 shadow-2xl">
         <button
           onClick={onClose}
-          className="absolute right-3 top-3 flex h-8 w-8 items-center justify-center rounded-full text-muted transition-colors hover:bg-white/10 hover:text-foreground"
+          className="absolute right-3 top-3 flex h-8 w-8 items-center justify-center rounded-full text-muted transition-colors hover:bg-foreground/10 hover:text-foreground"
           aria-label="Close"
         >
           ✕

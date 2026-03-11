@@ -32,7 +32,7 @@ function PokeSearchContent() {
   return (
     <main className="min-h-screen px-4 py-8 md:px-8">
       <header className="mb-10 text-center">
-        <h1 className="text-4xl font-bold text-foreground">PokéSearch</h1>
+        <img src="/logo.png" alt="Simple Pokédex" className="mx-auto h-40 w-auto" />
         <p className="mt-2 text-muted">
           Search Pokémon to view generation-accurate sprites, types, abilities, stats, and
           weaknesses.

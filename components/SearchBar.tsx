@@ -86,13 +86,13 @@ export default function SearchBar({ onSelect }: SearchBarProps) {
           error ? "Failed to load Pokémon list" : loading ? "Loading Pokémon…" : "Search Pokémon…"
         }
         disabled={loading || !!error}
-        className={`w-full rounded-xl border px-4 py-3 text-foreground placeholder:text-muted outline-none transition focus:border-white/40 focus:ring-2 focus:ring-white/10 disabled:opacity-50 ${
-          error ? "border-red-500/40 bg-red-500/5" : "border-white/20 bg-surface-dark"
+        className={`w-full rounded-xl border px-4 py-3 text-foreground placeholder:text-muted outline-none transition focus:border-foreground/40 focus:ring-2 focus:ring-foreground/10 disabled:opacity-50 ${
+          error ? "border-red-500/40 bg-red-500/5" : "border-foreground/20 bg-white"
         }`}
       />
       {error && <p className="mt-2 text-center text-sm text-red-400">{error}</p>}
       {isOpen && filtered.length > 0 && (
-        <ul className="absolute left-0 right-0 z-40 mt-1 max-h-64 overflow-y-auto rounded-xl border border-white/10 bg-surface-dark shadow-xl">
+        <ul className="absolute left-0 right-0 z-40 mt-1 max-h-64 overflow-y-auto rounded-xl border border-foreground/10 bg-white shadow-xl">
           {filtered.map((p, i) => (
             <li key={p.name}>
               <button
@@ -100,8 +100,8 @@ export default function SearchBar({ onSelect }: SearchBarProps) {
                 onClick={() => handleSelect(p.name)}
                 className={`flex w-full items-center gap-3 px-4 py-2.5 text-left text-sm capitalize transition ${
                   i === highlightIndex
-                    ? "bg-white/10 text-foreground"
-                    : "text-foreground/70 hover:bg-white/5"
+                    ? "bg-foreground/10 text-foreground"
+                    : "text-foreground/70 hover:bg-foreground/5"
                 }`}
               >
                 <span className="font-mono text-xs text-muted">

@@ -1,10 +1,10 @@
-# Software Requirements Specification (SRS): PokéSearch App
+# Software Requirements Specification (SRS): Simple Pokédex App
 
 ## 1. Introduction
 
 ### 1.1 Purpose
 
-This document specifies the requirements for the **PokéSearch** application, a web-based tool designed to replicate the official Pokemon.com Pokédex experience. It allows users to search for Pokémon, view high-quality artwork, and analyze technical data like abilities and type effectiveness.
+This document specifies the requirements for the **Simple Pokédex** application, a web-based tool designed to replicate the official Pokemon.com Pokédex experience. It allows users to search for Pokémon, view high-quality artwork, and analyze technical data like abilities and type effectiveness.
 
 ### 1.2 Scope
 
@@ -56,7 +56,7 @@ The application is a client-side web app built with React/Next.js. It integrates
 
 ### 4.1 Visual Design
 
-- **Background:** Primary background color `#313131` (Dark Gray).
+- **Background:** Primary background color `#F0ECEC` (Light Off-White).
 - **Sprite Container:** Light gray rounded box (`#F2F2F2`).
 - **Type Badges:** Pill-shaped badges with text and specific background colors (e.g., Grass: `#78C850`, Fire: `#F08030`).
 

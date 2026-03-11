@@ -1,4 +1,4 @@
-"""Generation-aware data resolution for PokéSearch.
+"""Generation-aware data resolution for Simple Pokédex.
 
 Mirrors the TypeScript logic in lib/generation-resolver.ts.
 Used by Python unit tests to validate resolution algorithms.

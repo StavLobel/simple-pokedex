@@ -1,15 +1,14 @@
-# PokéSearch
+# Simple Pokédex
 
 [![CI](https://github.com/your-username/simple_pokedex/actions/workflows/ci-deploy.yml/badge.svg)](https://github.com/your-username/simple_pokedex/actions/workflows/ci-deploy.yml)
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
 [![Node.js](https://img.shields.io/badge/node-%3E%3D20-brightgreen)](https://nodejs.org)
 
+![Simple Pokédex](public/logo.png)
+
 A web-based Pokédex app that lets you search for Pokémon, view official artwork, explore type effectiveness, and read ability descriptions.
 
 Built with [Next.js](https://nextjs.org), [Tailwind CSS](https://tailwindcss.com), and the [PokéAPI](https://pokeapi.co).
-
-<!-- TODO: Replace with an actual screenshot of the app -->
-<!-- ![PokéSearch Screenshot](docs/screenshot.png) -->
 
 ## Features
 

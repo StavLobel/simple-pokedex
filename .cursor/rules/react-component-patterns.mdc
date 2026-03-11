@@ -1,5 +1,5 @@
 ---
-description: React component conventions for PokéSearch
+description: React component conventions for Simple Pokédex
 globs: components/**/*.tsx
 alwaysApply: false
 ---

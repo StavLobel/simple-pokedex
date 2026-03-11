@@ -1,4 +1,4 @@
-# Software Test Plan (STP): PokéSearch App
+# Software Test Plan (STP): Simple Pokédex App
 
 > **Derived from:** [SRS.md](./SRS.md)
 > **Test Framework:** pytest + pytest-playwright
@@ -10,7 +10,7 @@
 
 ### 1.1 Purpose
 
-This document defines the testing strategy, test cases, and pytest structure for the **PokéSearch** application. Every test case is traceable to a requirement in the SRS.
+This document defines the testing strategy, test cases, and pytest structure for the **Simple Pokédex** application. Every test case is traceable to a requirement in the SRS.
 
 ### 1.2 Scope
 

@@ -1,7 +1,7 @@
 [project]
-name = "pokesearch-tests"
+name = "simple-pokedex-tests"
 version = "0.1.0"
-description = "Test suite for the PokéSearch application"
+description = "Test suite for the Simple Pokédex application"
 requires-python = ">=3.11"
 
 [tool.pytest.ini_options]
