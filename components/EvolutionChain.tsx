@@ -99,7 +99,7 @@ export default function EvolutionChain({
   const isSingleStage = tree.evolvesTo.length === 0;
 
   return (
-    <div className="mt-8 overflow-x-auto" data-testid="evolution-chain">
+    <div className="mt-8 overflow-x-auto text-center" data-testid="evolution-chain">
       <h3 className="mb-4 text-sm font-semibold uppercase tracking-wider text-muted">
         Evolution Chain
       </h3>
@@ -109,7 +109,7 @@ export default function EvolutionChain({
           Does not evolve.
         </p>
       ) : (
-        <div className="flex min-w-0 flex-col gap-2">
+        <div className="inline-flex items-center gap-2">
           <StageRow
             stage={tree}
             generation={generation}
@@ -140,20 +140,18 @@ function StageRow({
   const isCurrent = stage.id === currentPokemonId;
 
   return (
-    <div className="flex min-w-0 flex-col gap-2">
-      <div className="flex min-w-0 flex-wrap items-center gap-2">
-        {!isRoot && stage.evolutionDetails.length > 0 && (
-          <EvolutionArrow
-            details={stage.evolutionDetails}
-            generation={generation}
-            itemSprites={itemSprites}
-          />
-        )}
-        <StageSprite stage={stage} available={available} isCurrent={isCurrent} />
-      </div>
+    <div className="flex items-center gap-2">
+      {!isRoot && stage.evolutionDetails.length > 0 && (
+        <EvolutionArrow
+          details={stage.evolutionDetails}
+          generation={generation}
+          itemSprites={itemSprites}
+        />
+      )}
+      <StageSprite stage={stage} available={available} isCurrent={isCurrent} />
 
       {stage.evolvesTo.length > 0 && (
-        <div className="flex min-w-0 flex-col gap-2 pl-6">
+        <div className={stage.evolvesTo.length === 1 ? "flex items-center" : "flex flex-col gap-2"}>
           {stage.evolvesTo.map((child) => (
             <StageRow
               key={child.id}

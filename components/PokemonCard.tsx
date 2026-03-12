@@ -35,9 +35,12 @@ import WeaknessGrid from "./WeaknessGrid";
 import AbilityModal from "./AbilityModal";
 import SpriteGallery from "./SpriteGallery";
 import EvolutionChain from "./EvolutionChain";
+import GenerationSelector from "./GenerationSelector";
+import type { GenerationName } from "@/lib/constants";
 
 interface PokemonCardProps {
   pokemonName: string;
+  minGeneration?: GenerationName;
 }
 
 interface AbilityInfo {
@@ -66,7 +69,7 @@ const STAT_COLORS: Record<string, string> = {
   special: "bg-purple-500",
 };
 
-export default function PokemonCard({ pokemonName }: PokemonCardProps) {
+export default function PokemonCard({ pokemonName, minGeneration }: PokemonCardProps) {
   const { generation } = useGeneration();
   const [pokemon, setPokemon] = useState<PokemonData | null>(null);
   const [resolvedStats, setResolvedStats] = useState<PokemonData["stats"]>([]);
@@ -209,17 +212,45 @@ export default function PokemonCard({ pokemonName }: PokemonCardProps) {
 
   return (
     <>
-      <div className="grid gap-8 overflow-hidden md:grid-cols-2">
-        {/* Left column — Sprites */}
-        <div
-          className="flex min-w-0 items-start justify-center"
-          data-testid="main-sprite-container"
-        >
-          <div className="flex w-full max-w-sm flex-col items-center gap-2 sm:flex-row sm:justify-center sm:gap-4">
+      <div className="space-y-6 text-center">
+        {/* Name & Type */}
+        <div>
+          <p className="font-mono text-sm text-muted">{formatDexNumber(pokemon.id)}</p>
+          <div className="flex items-center justify-center gap-3">
+            <h2 className="text-3xl font-bold capitalize text-foreground">{pokemon.name}</h2>
+            {variantOptions.length > 1 && (
+              <select
+                value={selectedVariant}
+                onChange={(e) => setSelectedVariant(e.target.value)}
+                className="rounded-lg border border-foreground/15 bg-background px-2 py-1 text-sm text-foreground"
+                data-testid="variant-selector"
+              >
+                {variantOptions.map((v) => (
+                  <option key={v.name} value={v.name}>
+                    {v.label}
+                  </option>
+                ))}
+              </select>
+            )}
+          </div>
+        </div>
+
+        <div>
+          <h3 className="mb-2 text-sm font-semibold uppercase tracking-wider text-muted">Type</h3>
+          <div className="flex justify-center gap-2">
+            {pokemon.types.map((t) => (
+              <TypeBadge key={t.type.name} type={t.type.name as PokemonTypeName} />
+            ))}
+          </div>
+        </div>
+
+        {/* Sprites */}
+        <div className="flex items-start justify-center" data-testid="main-sprite-container">
+          <div className="flex max-w-md flex-row items-center justify-center gap-6">
             {normalSprite ? (
               <div className="flex flex-col items-center gap-1">
                 <div
-                  className="flex aspect-square w-full max-w-[12rem] items-center justify-center rounded-2xl bg-transparent sm:w-40"
+                  className="flex aspect-square w-36 items-center justify-center rounded-2xl bg-transparent sm:w-44"
                   style={{
                     backgroundImage: "url(/pokeball.png)",
                     backgroundSize: "85%",
@@ -247,7 +278,7 @@ export default function PokemonCard({ pokemonName }: PokemonCardProps) {
             {shinySprite && (
               <div className="flex flex-col items-center gap-1">
                 <div
-                  className="flex aspect-square w-full max-w-[12rem] items-center justify-center rounded-2xl bg-transparent sm:w-40"
+                  className="flex aspect-square w-36 items-center justify-center rounded-2xl bg-transparent sm:w-44"
                   style={{
                     backgroundImage: "url(/pokeball.png)",
                     backgroundSize: "85%",
@@ -273,91 +304,57 @@ export default function PokemonCard({ pokemonName }: PokemonCardProps) {
           </div>
         </div>
 
-        {/* Right column — Details */}
-        <div className="min-w-0 space-y-6">
-          <div>
-            <p className="font-mono text-sm text-muted">{formatDexNumber(pokemon.id)}</p>
-            <div className="flex items-center gap-3">
-              <h2 className="text-3xl font-bold capitalize text-foreground">{pokemon.name}</h2>
-              {variantOptions.length > 1 && (
-                <select
-                  value={selectedVariant}
-                  onChange={(e) => setSelectedVariant(e.target.value)}
-                  className="rounded-lg border border-foreground/15 bg-background px-2 py-1 text-sm text-foreground"
-                  data-testid="variant-selector"
-                >
-                  {variantOptions.map((v) => (
-                    <option key={v.name} value={v.name}>
-                      {v.label}
-                    </option>
-                  ))}
-                </select>
-              )}
-            </div>
-          </div>
+        {/* Generation Selector */}
+        <GenerationSelector minGeneration={minGeneration} compact />
 
-          {/* Types */}
-          <div>
-            <h3 className="mb-2 text-sm font-semibold uppercase tracking-wider text-muted">Type</h3>
-            <div className="flex gap-2">
-              {pokemon.types.map((t) => (
-                <TypeBadge key={t.type.name} type={t.type.name as PokemonTypeName} />
-              ))}
-            </div>
+        {/* Abilities */}
+        <div>
+          <h3 className="mb-2 text-sm font-semibold uppercase tracking-wider text-muted">
+            Abilities
+          </h3>
+          <div className="flex flex-wrap justify-center gap-2">
+            {abilities.map((a) => (
+              <button
+                key={a.name}
+                onClick={() => setModalAbility(a)}
+                className="rounded-lg border border-foreground/15 px-3 py-1.5 text-sm capitalize text-foreground transition hover:bg-foreground/10"
+              >
+                {a.name.replace("-", " ")}
+                {a.isHidden && (
+                  <span className="ml-1 text-[10px] uppercase text-muted">(Hidden)</span>
+                )}
+              </button>
+            ))}
           </div>
-
-          {/* Abilities */}
-          <div>
-            <h3 className="mb-2 text-sm font-semibold uppercase tracking-wider text-muted">
-              Abilities
-            </h3>
-            <div className="flex flex-wrap gap-2">
-              {abilities.map((a) => (
-                <button
-                  key={a.name}
-                  onClick={() => setModalAbility(a)}
-                  className="rounded-lg border border-foreground/15 px-3 py-1.5 text-sm capitalize text-foreground transition hover:bg-foreground/10"
-                >
-                  {a.name.replace("-", " ")}
-                  {a.isHidden && (
-                    <span className="ml-1 text-[10px] uppercase text-muted">(Hidden)</span>
-                  )}
-                </button>
-              ))}
-            </div>
-          </div>
-
-          {/* Base Stats */}
-          <div>
-            <h3 className="mb-2 text-sm font-semibold uppercase tracking-wider text-muted">
-              Base Stats
-            </h3>
-            <div className="space-y-2" data-testid="stats-section">
-              {resolvedStats.map((s) => {
-                const label = STAT_LABELS[s.stat.name] ?? s.stat.name;
-                const color = STAT_COLORS[s.stat.name] ?? "bg-gray-500";
-                const pct = Math.min((s.base_stat / 255) * 100, 100);
-                return (
-                  <div key={s.stat.name} className="flex items-center gap-3">
-                    <span className="w-14 text-right text-xs font-medium text-muted">{label}</span>
-                    <span className="w-8 text-right font-mono text-sm text-foreground">
-                      {s.base_stat}
-                    </span>
-                    <div className="h-2.5 flex-1 overflow-hidden rounded-full bg-foreground/10">
-                      <div
-                        className={`h-full rounded-full ${color}`}
-                        style={{ width: `${pct}%` }}
-                      />
-                    </div>
-                  </div>
-                );
-              })}
-            </div>
-          </div>
-
-          {/* Weaknesses / Resistances */}
-          <WeaknessGrid weaknesses={weaknesses} resistances={resistances} immunities={immunities} />
         </div>
+
+        {/* Base Stats */}
+        <div>
+          <h3 className="mb-2 text-sm font-semibold uppercase tracking-wider text-muted">
+            Base Stats
+          </h3>
+          <div className="mx-auto max-w-md space-y-2" data-testid="stats-section">
+            {resolvedStats.map((s) => {
+              const label = STAT_LABELS[s.stat.name] ?? s.stat.name;
+              const color = STAT_COLORS[s.stat.name] ?? "bg-gray-500";
+              const pct = Math.min((s.base_stat / 255) * 100, 100);
+              return (
+                <div key={s.stat.name} className="flex items-center gap-3">
+                  <span className="w-14 text-right text-xs font-medium text-muted">{label}</span>
+                  <span className="w-8 text-right font-mono text-sm text-foreground">
+                    {s.base_stat}
+                  </span>
+                  <div className="h-2.5 flex-1 overflow-hidden rounded-full bg-foreground/10">
+                    <div className={`h-full rounded-full ${color}`} style={{ width: `${pct}%` }} />
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+        </div>
+
+        {/* Weaknesses / Resistances */}
+        <WeaknessGrid weaknesses={weaknesses} resistances={resistances} immunities={immunities} />
       </div>
 
       <EvolutionChain pokemonName={pokemonName} pokemonId={pokemon.id} generation={generation} />

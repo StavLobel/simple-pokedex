@@ -4,7 +4,6 @@ import { useCallback, useState } from "react";
 import { GenerationProvider, useGeneration } from "@/contexts/GenerationContext";
 import { PokemonProvider, usePokemonList } from "@/contexts/PokemonContext";
 import { getGenerationForId, generationIndex, type GenerationName } from "@/lib/constants";
-import GenerationSelector from "@/components/GenerationSelector";
 import SearchBar from "@/components/SearchBar";
 import PokemonCard from "@/components/PokemonCard";
 
@@ -37,14 +36,17 @@ function PokeSearchContent() {
           Search Pokémon to view generation-accurate sprites, types, abilities, stats, and
           weaknesses.
         </p>
-        <GenerationSelector minGeneration={minGeneration} />
       </header>
 
       <SearchBar onSelect={handleSelect} />
 
       {selectedPokemon && (
         <div className="mx-auto mt-10 max-w-3xl">
-          <PokemonCard key={selectedPokemon} pokemonName={selectedPokemon} />
+          <PokemonCard
+            key={selectedPokemon}
+            pokemonName={selectedPokemon}
+            minGeneration={minGeneration}
+          />
         </div>
       )}
     </main>

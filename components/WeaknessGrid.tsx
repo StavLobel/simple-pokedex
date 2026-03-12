@@ -17,7 +17,7 @@ export default function WeaknessGrid({ weaknesses, resistances, immunities }: We
           Weaknesses
         </h3>
         {weaknesses.length > 0 ? (
-          <div className="flex flex-wrap gap-2">
+          <div className="flex flex-wrap justify-center gap-2">
             {weaknesses.map((w) => (
               <TypeBadge key={w.type} type={w.type} multiplier={w.multiplier} />
             ))}
@@ -32,7 +32,7 @@ export default function WeaknessGrid({ weaknesses, resistances, immunities }: We
           <h3 className="mb-2 text-sm font-semibold uppercase tracking-wider text-muted">
             Resistances
           </h3>
-          <div className="flex flex-wrap gap-2">
+          <div className="flex flex-wrap justify-center gap-2">
             {resistances.map((r) => (
               <TypeBadge key={r.type} type={r.type} multiplier={r.multiplier} />
             ))}
@@ -45,7 +45,7 @@ export default function WeaknessGrid({ weaknesses, resistances, immunities }: We
           <h3 className="mb-2 text-sm font-semibold uppercase tracking-wider text-muted">
             Immunities
           </h3>
-          <div className="flex flex-wrap gap-2">
+          <div className="flex flex-wrap justify-center gap-2">
             {immunities.map((i) => (
               <TypeBadge key={i.type} type={i.type} multiplier={0} />
             ))}

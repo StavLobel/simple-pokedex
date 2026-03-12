@@ -5,6 +5,17 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [26.3.12] - 2026-03-12
+
+### Changed
+
+- Redesigned Pokémon card to single-column centered layout: name/type at top, sprites below, then abilities, stats, and weaknesses
+- Sprites are always displayed side-by-side (no mobile stacking) and enlarged
+- Evolution chain now renders as a single horizontal line instead of a vertical tree
+- Moved generation selector from page header into the Pokémon card (below sprites), with a compact style
+- Removed shiny sprites from the Generation Sprites gallery
+- Centered all card sections (type badges, abilities, weakness/resistance/immunity badges)
+
 ## [26.3.11] - 2026-03-12
 
 ### Fixed
