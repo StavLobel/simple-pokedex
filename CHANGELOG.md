@@ -5,6 +5,25 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [26.3.11] - 2026-03-12
+
+### Fixed
+
+- Pokémon card components no longer overflow screen width on narrow viewports; evolution chain uses vertical tree layout, card container uses `overflow-hidden`, and flex children use `min-w-0` (Issue #15)
+
+### Changed
+
+- Normal and shiny sprites are now displayed side by side with labels instead of hold-to-reveal interaction, in both the main sprite area and the generation gallery; shiny hidden when unavailable (Issue #16)
+- Evolution chain arrows now display item icons (e.g., Thunder Stone, Fire Stone) fetched from the PokéAPI items endpoint
+- Replaced `tests/e2e/test_shiny_hold.py` with `tests/e2e/test_shiny_display.py`
+- Added `TestNoHorizontalOverflow` tests in `tests/e2e/test_responsive_layout.py`
+- Updated STP §6.4, §6.13, and traceability matrix for Issues #15 and #16
+
+### Added
+
+- `ItemData` interface and `fetchItemData` function in `lib/pokeapi.ts`
+- `collectItemNames` helper in `lib/evolution-utils.ts`
+
 ## [26.3.10] - 2026-03-11
 
 ### Added
@@ -101,6 +120,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - GitHub issue and pull request templates
 - SRS and STP documentation in `docs/`
 
+[26.3.11]: https://github.com/StavLobel/simple-pokedex/releases/tag/v26.3.11
+[26.3.10]: https://github.com/StavLobel/simple-pokedex/releases/tag/v26.3.10
 [26.3.5]: https://github.com/StavLobel/simple-pokedex/releases/tag/v26.3.5
 [26.3.4]: https://github.com/StavLobel/simple-pokedex/releases/tag/v26.3.4
 [26.3.2]: https://github.com/StavLobel/simple-pokedex/releases/tag/v26.3.2

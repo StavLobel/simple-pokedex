@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useMemo, useCallback } from "react";
+import { useState, useMemo } from "react";
 import Image from "next/image";
 import {
   GENERATION_ORDER,
@@ -48,16 +48,11 @@ export default function SpriteGallery({ sprites }: SpriteGalleryProps) {
   }, [sprites]);
 
   const [selectedIndex, setSelectedIndex] = useState(0);
-  const [isHoldingShiny, setIsHoldingShiny] = useState(false);
-
-  const handlePointerDown = useCallback(() => setIsHoldingShiny(true), []);
-  const handlePointerUp = useCallback(() => setIsHoldingShiny(false), []);
 
   if (options.length === 0) return null;
 
   const current = options[selectedIndex] ?? options[0];
   const hasShiny = !!current.shinyUrl;
-  const displayUrl = isHoldingShiny && hasShiny ? current.shinyUrl! : current.url;
 
   return (
     <div
@@ -83,27 +78,46 @@ export default function SpriteGallery({ sprites }: SpriteGalleryProps) {
         </select>
 
         <div
-          className={`flex h-32 w-32 items-center justify-center${hasShiny ? " cursor-pointer select-none" : ""}`}
-          onPointerDown={hasShiny ? handlePointerDown : undefined}
-          onPointerUp={hasShiny ? handlePointerUp : undefined}
-          onPointerLeave={hasShiny ? handlePointerUp : undefined}
-          onPointerCancel={hasShiny ? handlePointerUp : undefined}
+          className="flex flex-col items-center gap-4 sm:flex-row sm:gap-8"
           data-testid="sprite-gallery-sprite-container"
         >
-          <Image
-            src={displayUrl}
-            alt={`${current.label} sprite`}
-            width={96}
-            height={96}
-            className={`image-rendering-pixelated h-auto w-24${
-              isHoldingShiny && hasShiny ? " animate-pulse brightness-110" : ""
-            }`}
-            unoptimized
-            data-testid="sprite-gallery-image"
-          />
+          <div className="flex flex-col items-center gap-1">
+            <div className="flex h-32 w-32 items-center justify-center">
+              <Image
+                src={current.url}
+                alt={`${current.label} sprite`}
+                width={96}
+                height={96}
+                className="image-rendering-pixelated h-auto w-24"
+                unoptimized
+                data-testid="sprite-gallery-image"
+              />
+            </div>
+            <span className="text-xs text-muted" data-testid="gallery-normal-label">
+              Normal
+            </span>
+          </div>
+
+          {hasShiny && (
+            <div className="flex flex-col items-center gap-1">
+              <div className="flex h-32 w-32 items-center justify-center">
+                <Image
+                  src={current.shinyUrl!}
+                  alt={`${current.label} shiny sprite`}
+                  width={96}
+                  height={96}
+                  className="image-rendering-pixelated h-auto w-24"
+                  unoptimized
+                  data-testid="sprite-gallery-shiny-image"
+                />
+              </div>
+              <span className="text-xs text-muted" data-testid="gallery-shiny-label">
+                Shiny
+              </span>
+            </div>
+          )}
         </div>
 
-        {hasShiny && <p className="text-xs text-muted">Hold sprite to view shiny</p>}
         {!hasShiny && current.generation === "generation-i" && (
           <p className="text-xs text-muted">Shiny sprites not available in Gen I</p>
         )}

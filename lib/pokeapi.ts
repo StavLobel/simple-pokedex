@@ -182,6 +182,17 @@ export async function fetchEvolutionChain(url: string): Promise<EvolutionChainDa
   return res.json();
 }
 
+export interface ItemData {
+  name: string;
+  sprites: { default: string | null };
+}
+
+export async function fetchItemData(nameOrId: string | number): Promise<ItemData> {
+  const res = await fetch(`${BASE_URL}/item/${nameOrId}`);
+  if (!res.ok) throw new Error(`Failed to fetch item: ${nameOrId}`);
+  return res.json();
+}
+
 export function extractIdFromUrl(url: string): number {
   const parts = url.replace(/\/$/, "").split("/");
   return Number(parts[parts.length - 1]);

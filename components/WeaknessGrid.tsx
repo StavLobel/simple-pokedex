@@ -11,7 +11,7 @@ interface WeaknessGridProps {
 
 export default function WeaknessGrid({ weaknesses, resistances, immunities }: WeaknessGridProps) {
   return (
-    <div className="space-y-4">
+    <div className="min-w-0 space-y-4">
       <div>
         <h3 className="mb-2 text-sm font-semibold uppercase tracking-wider text-muted">
           Weaknesses

@@ -72,7 +72,7 @@ tests/
     ├── test_generation_filter.py
     ├── test_sprite_sizing.py
     ├── test_sprite_gallery.py
-    ├── test_shiny_hold.py
+    ├── test_shiny_display.py
     ├── test_evolution_chain.py
     └── test_regional_variants.py
 ```
@@ -939,45 +939,21 @@ class TestAbilityModal:
 ### 6.4 Responsive Layout
 
 **File:** `tests/e2e/test_responsive_layout.py`
-**Traces to:** SRS §4.2
+**Traces to:** SRS §4.2, Issue #15
 
 ```python
-import pytest
-
-BASE_URL = "http://localhost:3000"
-
-pytestmark = pytest.mark.e2e
-
-
 class TestDesktopLayout:
-    """SRS §4.2: Two-column grid on desktop."""
-
-    def test_desktop_two_column_layout(self, page):
-        page.goto(BASE_URL)
-        page.fill("input", "pikachu")
-        page.wait_for_timeout(500)
-        page.locator("[data-testid='suggestion'], .autocomplete-item, li").first.click()
-        page.wait_for_timeout(1500)
-        img_box = page.locator("img[src*='official-artwork']").bounding_box()
-        stats = page.locator("[data-testid='stats'], .stats-section, .pokemon-stats").first
-        if stats.is_visible():
-            stats_box = stats.bounding_box()
-            assert img_box["x"] < stats_box["x"], "Image should be left of stats on desktop"
-
+    def test_desktop_two_column_layout(self, page): ...
 
 class TestMobileLayout:
-    """SRS §4.2: Single-column responsive stack on mobile."""
+    def test_mobile_single_column(self, mobile_page): ...
 
-    def test_mobile_single_column(self, mobile_page):
-        mobile_page.goto(BASE_URL)
-        mobile_page.fill("input", "pikachu")
-        mobile_page.wait_for_timeout(500)
-        mobile_page.locator("[data-testid='suggestion'], .autocomplete-item, li").first.click()
-        mobile_page.wait_for_timeout(1500)
-        img = mobile_page.locator("img[src*='official-artwork']")
-        if img.is_visible():
-            img_box = img.bounding_box()
-            assert img_box["width"] <= 375, "Image should fit within mobile viewport"
+class TestNoHorizontalOverflow:
+    """Issue #15: No horizontal scrollbar on any screen size."""
+    def test_no_overflow_eevee_320px(self, browser): ...
+    def test_no_overflow_eevee_375px(self, browser): ...
+    def test_evolution_chain_within_bounds(self, browser): ...
+    def test_no_overflow_pikachu_768px(self, browser): ...
 ```
 
 ### 6.5 Error Handling
@@ -1216,19 +1192,21 @@ class TestSpriteGallery:
     def test_gallery_not_shown_for_invalid_pokemon(self, page): ...
 ```
 
-### 6.13 Shiny Hold
+### 6.13 Shiny Display (Side-by-Side)
 
-**File:** `tests/e2e/test_shiny_hold.py`
-**Traces to:** Issue #12
+**File:** `tests/e2e/test_shiny_display.py`
+**Traces to:** Issue #16 (supersedes Issue #12)
 
-Tests that holding the sprite shows the shiny variant and releasing reverts it, with no layout shift.
+Tests that normal and shiny sprites are displayed side by side, with labels, and that shiny sprites are hidden when unavailable (e.g., Gen I gallery).
 
 ```python
-class TestShinyHold:
-    def test_holding_main_sprite_shows_shiny(self, page): ...
-    def test_releasing_main_sprite_reverts(self, page): ...
-    def test_gallery_sprite_shiny_hold(self, page): ...
-    def test_no_layout_shift_on_shiny_swap(self, page): ...
+class TestShinyDisplay:
+    def test_normal_and_shiny_sprites_visible(self, page): ...
+    def test_sprite_labels_present(self, page): ...
+    def test_different_sprite_srcs(self, page): ...
+    def test_gallery_side_by_side(self, page): ...
+    def test_gallery_gen_i_no_shiny(self, page): ...
+    def test_no_layout_shift_on_pokemon_switch(self, page): ...
 ```
 
 ### 6.14 Evolution Chain Display
@@ -1311,6 +1289,7 @@ class TestSearchPerformance:
 | **NFR** Accessibility          | `test_fr8_modal_close_esc_key`, `test_fr8_modal_close_x_button`                                                                                                                                                                                                                                                                                                                                                                                                                                                                                              | E2E                    |
 | **NFR** Availability           | `test_nfr_invalid_pokemon_shows_error`, `test_nfr_app_loads_without_crash`, `test_nfr_no_console_errors_on_load`                                                                                                                                                                                                                                                                                                                                                                                                                                             | E2E                    |
 | **§4.2** Layout                | `test_desktop_two_column_layout`, `test_mobile_single_column`                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                | E2E                    |
+| **Issue #15** Overflow Fix     | `test_no_overflow_eevee_320px`, `test_no_overflow_eevee_375px`, `test_evolution_chain_within_bounds`, `test_no_overflow_pikachu_768px`                                                                                                                                                                                                                                                                                                                                                                                                                       | E2E                    |
 | **Issue #7** Legal Pages       | `test_footer_contains_pokeapi_attribution`, `test_footer_contains_trademark_disclaimer`, `test_terms_page_accessible`, `test_privacy_page_accessible`, `test_terms_page_has_required_sections`, `test_privacy_page_has_required_sections`, `test_footer_links_present_on_all_pages`                                                                                                                                                                                                                                                                          | E2E                    |
 | **Issue #8** Versioning        | `test_package_json_has_version`, `test_version_follows_semver`, `test_changelog_exists`, `test_changelog_has_current_version_entry`, `test_git_tag_matches_package_version`                                                                                                                                                                                                                                                                                                                                                                                  | Unit, Integration      |
 | **Issue #1** FRLG Abilities    | `test_gengar_has_levitate_in_gen3`, `test_gengar_has_cursed_body_in_gen9`, `test_null_ability_slot_removed`, `test_multiple_past_entries_earliest_wins`, `test_past_abilities_field_exists`, `test_fr3_frlg_ability_override_applied`, `test_gengar_shows_levitate_gen3`, `test_gengar_shows_cursed_body_gen9`                                                                                                                                                                                                                                               | Unit, Integration, E2E |
@@ -1318,7 +1297,7 @@ class TestSearchPerformance:
 | **Issue #9** Gen Filter        | `test_gen_dropdown_filters_after_gen5_pokemon`, `test_gen_dropdown_shows_all_for_gen1_pokemon`, `test_gen_auto_switches_to_pokemon_generation`, `test_gen_stays_when_selecting_earlier_pokemon`, `test_autocomplete_shows_gen5_pokemon_on_gen3`, `test_autocomplete_shows_gen9_pokemon`, `getGenerationForId (vitest)`, `generationIndex (vitest)`                                                                                                                                                                                                           | Unit, E2E              |
 | **Issue #10** Sprite Sizing    | `test_sprite_fills_container_official_artwork`, `test_sprite_fills_container_gen_sprite`, `test_sprite_maintains_aspect_ratio`                                                                                                                                                                                                                                                                                                                                                                                                                               | E2E                    |
 | **Issue #14** Sprite Gallery   | `test_main_sprite_is_front_default`, `test_gallery_section_visible`, `test_gallery_dropdown_has_options`, `test_gallery_dropdown_changes_sprite`, `test_gallery_not_shown_for_invalid_pokemon`                                                                                                                                                                                                                                                                                                                                                               | E2E                    |
-| **Issue #12** Shiny Hold       | `test_holding_main_sprite_shows_shiny`, `test_releasing_main_sprite_reverts`, `test_gallery_sprite_shiny_hold`, `test_no_layout_shift_on_shiny_swap`                                                                                                                                                                                                                                                                                                                                                                                                         | E2E                    |
+| **Issue #16** Shiny Display    | `test_normal_and_shiny_sprites_visible`, `test_sprite_labels_present`, `test_different_sprite_srcs`, `test_gallery_side_by_side`, `test_gallery_gen_i_no_shiny`, `test_no_layout_shift_on_pokemon_switch`                                                                                                                                                                                                                                                                                                                                                    | E2E                    |
 | **Issue #13** Evolution Chain  | `test_linear_chain_structure`, `test_single_stage_pokemon`, `test_level_up_method`, `test_trade_method`, `test_item_method`, `test_leafeon_gen4_uses_location`, `test_leafeon_gen8_uses_item`, `test_species_has_evolution_chain_url`, `test_evolution_chain_has_recursive_structure`, `test_eevee_has_branching_evolutions`, `test_tauros_has_no_evolutions`, `test_bulbasaur_shows_three_stage_chain`, `test_evolution_arrows_show_methods`, `test_tauros_shows_no_evolution`, `test_current_pokemon_highlighted`, `test_eevee_shows_branching_evolutions` | Unit, Integration, E2E |
 | **Issue #5** Regional Variants | `test_vulpix_has_alolan_variant`, `test_pikachu_has_no_regional_variant`, `test_variant_names_parsed_correctly`, `test_variants_filtered_by_generation`, `test_species_varieties_endpoint`, `test_variant_pokemon_data_fetchable`, `test_variant_dropdown_visible_for_vulpix`, `test_variant_dropdown_hidden_for_pikachu`, `test_selecting_alolan_updates_card`, `test_variant_sprite_updates`, `test_variant_hidden_in_earlier_gen`                                                                                                                         | Unit, Integration, E2E |
 | **Issue #4** Gen Selector      | `test_gen3_types_no_fairy`, `test_gen6_introduces_fairy`, `test_pikachu_stats_gen3`, `test_steel_resists_ghost_dark_gen3`, `test_steel_not_resist_ghost_dark_gen6`, `test_past_types_field_exists`, `test_past_stats_field_exists`, `test_past_damage_relations_field_exists`, `test_gen_selector_visible`, `test_default_gen_is_gen3`, `test_clefairy_normal_gen3`, `test_clefairy_fairy_gen6`, `test_switching_gen_updates_pokemon_list`, `test_stats_displayed`                                                                                           | Unit, Integration, E2E |

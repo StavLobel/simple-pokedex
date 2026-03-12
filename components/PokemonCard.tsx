@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect } from "react";
 import Image from "next/image";
 import {
   fetchPokemonData,
@@ -77,14 +77,10 @@ export default function PokemonCard({ pokemonName }: PokemonCardProps) {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [modalAbility, setModalAbility] = useState<AbilityInfo | null>(null);
-  const [isHoldingShiny, setIsHoldingShiny] = useState(false);
 
   const [varieties, setVarieties] = useState<SpeciesVariety[]>([]);
   const [selectedVariant, setSelectedVariant] = useState<string>(pokemonName);
   const [variantOptions, setVariantOptions] = useState<VariantOption[]>([]);
-
-  const handlePointerDown = useCallback(() => setIsHoldingShiny(true), []);
-  const handlePointerUp = useCallback(() => setIsHoldingShiny(false), []);
 
   // Fetch species data to discover variants
   useEffect(() => {
@@ -208,52 +204,77 @@ export default function PokemonCard({ pokemonName }: PokemonCardProps) {
     );
   }
 
-  const mainSprite =
-    isHoldingShiny && pokemon.sprites.front_shiny
-      ? pokemon.sprites.front_shiny
-      : pokemon.sprites.front_default;
-  const hasShiny = !!pokemon.sprites.front_shiny;
+  const normalSprite = pokemon.sprites.front_default;
+  const shinySprite = pokemon.sprites.front_shiny;
 
   return (
     <>
-      <div className="grid gap-8 md:grid-cols-2">
-        {/* Left column — Sprite */}
-        <div className="flex items-start justify-center">
-          <div
-            className={`flex aspect-square w-full max-w-sm items-center justify-center rounded-2xl bg-transparent${
-              hasShiny ? " cursor-pointer select-none" : ""
-            }`}
-            data-testid="main-sprite-container"
-            style={{
-              backgroundImage: "url(/pokeball.png)",
-              backgroundSize: "85%",
-              backgroundPosition: "center",
-              backgroundRepeat: "no-repeat",
-            }}
-            onPointerDown={hasShiny ? handlePointerDown : undefined}
-            onPointerUp={hasShiny ? handlePointerUp : undefined}
-            onPointerLeave={hasShiny ? handlePointerUp : undefined}
-            onPointerCancel={hasShiny ? handlePointerUp : undefined}
-          >
-            {mainSprite ? (
-              <Image
-                src={mainSprite}
-                alt={pokemon.name}
-                width={400}
-                height={400}
-                className={`relative z-10 h-auto w-full drop-shadow-lg${
-                  isHoldingShiny ? " animate-pulse brightness-110" : ""
-                }`}
-                priority
-              />
+      <div className="grid gap-8 overflow-hidden md:grid-cols-2">
+        {/* Left column — Sprites */}
+        <div
+          className="flex min-w-0 items-start justify-center"
+          data-testid="main-sprite-container"
+        >
+          <div className="flex w-full max-w-sm flex-col items-center gap-2 sm:flex-row sm:justify-center sm:gap-4">
+            {normalSprite ? (
+              <div className="flex flex-col items-center gap-1">
+                <div
+                  className="flex aspect-square w-full max-w-[12rem] items-center justify-center rounded-2xl bg-transparent sm:w-40"
+                  style={{
+                    backgroundImage: "url(/pokeball.png)",
+                    backgroundSize: "85%",
+                    backgroundPosition: "center",
+                    backgroundRepeat: "no-repeat",
+                  }}
+                >
+                  <Image
+                    src={normalSprite}
+                    alt={pokemon.name}
+                    width={400}
+                    height={400}
+                    className="relative z-10 h-auto w-full drop-shadow-lg"
+                    priority
+                    data-testid="normal-sprite"
+                  />
+                </div>
+                <span className="text-xs text-muted" data-testid="normal-sprite-label">
+                  Normal
+                </span>
+              </div>
             ) : (
               <div className="flex items-center justify-center text-muted">No image</div>
+            )}
+            {shinySprite && (
+              <div className="flex flex-col items-center gap-1">
+                <div
+                  className="flex aspect-square w-full max-w-[12rem] items-center justify-center rounded-2xl bg-transparent sm:w-40"
+                  style={{
+                    backgroundImage: "url(/pokeball.png)",
+                    backgroundSize: "85%",
+                    backgroundPosition: "center",
+                    backgroundRepeat: "no-repeat",
+                  }}
+                >
+                  <Image
+                    src={shinySprite}
+                    alt={`${pokemon.name} shiny`}
+                    width={400}
+                    height={400}
+                    className="relative z-10 h-auto w-full drop-shadow-lg"
+                    priority
+                    data-testid="shiny-sprite"
+                  />
+                </div>
+                <span className="text-xs text-muted" data-testid="shiny-sprite-label">
+                  Shiny
+                </span>
+              </div>
             )}
           </div>
         </div>
 
         {/* Right column — Details */}
-        <div className="space-y-6">
+        <div className="min-w-0 space-y-6">
           <div>
             <p className="font-mono text-sm text-muted">{formatDexNumber(pokemon.id)}</p>
             <div className="flex items-center gap-3">

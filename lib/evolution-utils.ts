@@ -132,6 +132,25 @@ function capitalize(s: string): string {
 }
 
 /**
+ * Collect all unique item names referenced in evolution details across the tree
+ * (both use-item triggers and trade held items).
+ */
+export function collectItemNames(stage: EvolutionStage): string[] {
+  const names = new Set<string>();
+
+  function walk(s: EvolutionStage) {
+    for (const d of s.evolutionDetails) {
+      if (d.item) names.add(d.item.name);
+      if (d.held_item) names.add(d.held_item.name);
+    }
+    for (const child of s.evolvesTo) walk(child);
+  }
+
+  walk(stage);
+  return Array.from(names);
+}
+
+/**
  * Determine if a Pokémon (by national dex ID) existed in a given generation.
  */
 export function isAvailableInGeneration(pokemonId: number, generation: GenerationName): boolean {
