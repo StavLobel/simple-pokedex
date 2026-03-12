@@ -27,10 +27,15 @@ jobs:
         id: version
         run: echo "version=v$(node -p "require('./package.json').version")" >> "$GITHUB_OUTPUT"
 
-      - name: Create GitHub Release
+      - name: Create GitHub Release (skip if exists)
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: gh release create "${{ steps.version.outputs.version }}" --generate-notes --target ${{ github.sha }}
+        run: |
+          if gh release view "${{ steps.version.outputs.version }}" > /dev/null 2>&1; then
+            echo "Release ${{ steps.version.outputs.version }} already exists — skipping creation"
+          else
+            gh release create "${{ steps.version.outputs.version }}" --generate-notes --target ${{ github.sha }}
+          fi
 
   deploy:
     name: Deploy to Vercel
